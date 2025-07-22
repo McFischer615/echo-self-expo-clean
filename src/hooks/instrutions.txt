@@ -1,0 +1,262 @@
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+
+interface HelpContent {
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+}
+
+export const useHelp = () => {
+  const [isHelpMode, setIsHelpMode] = useState(false);
+  const [helpEnabled, setHelpEnabled] = useState(true);
+  const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
+
+  const helpContent: Record<string, HelpContent> = {
+    'create-echo': {
+      id: 'create-echo',
+      title: 'Creating Your Echo',
+      content: 'Your Echo is a behavioral AI twin that learns your communication patterns, decision-making style, and personality traits.',
+      category: 'echo-management',
+    },
+    'chat-echo': {
+      id: 'chat-echo',
+      title: 'Chatting with Your Echo',
+      content: 'Test how well your Echo mimics your personality by having conversations. The more you interact, the better it becomes.',
+      category: 'interaction',
+    },
+    'api-gateway': {
+      id: 'api-gateway',
+      title: 'API Gateway',
+      content: "Connect external platforms like Gmail, Slack, and social media to enhance your Echo's learning with real behavioral data.",
+      category: 'integrations',
+    },
+    'echo-edit': {
+      id: 'echo-edit',
+      title: 'Editing Your Echo',
+      content: "You can modify your Echo's personality traits, communication style, and training data to improve its accuracy.",
+      category: 'echo-management',
+    },
+    'analytics': {
+      id: 'analytics',
+      title: 'Analytics Dashboard',
+      content: "Track your Echo's performance, conversation patterns, and learning progress over time.",
+      category: 'analytics',
+    },
+  };
+
+  const toggleHelpMode = useCallback(() => {
+    setIsHelpMode((prev) => !prev);
+    setActiveTooltip(null);
+  }, []);
+
+  const showTooltip = (tooltipId: string) => {
+    if (helpEnabled) {
+      setActiveTooltip(tooltipId);
+    }
+  };
+
+  const hideTooltip = () => {
+    setActiveTooltip(null);
+  };
+
+  const getHelpContent = (id: string): HelpContent | null => {
+    return helpContent[id] || null;
+  };
+
+  const loadHelpSettings = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: settings } = await supabase
+        .from('user_settings')
+        .select('help_enabled')
+        .eq('user_id', user.id)
+        .single();
+
+      if (settings) {
+        setHelpEnabled(settings.help_enabled);
+      }
+    } catch (error) {
+      console.error('Error loading help settings:', error);
+    }
+  };
+
+  const updateHelpSettings = async (enabled: boolean) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      await supabase
+        .from('user_settings')
+        .upsert(
+          {
+            user_id: user.id,
+            help_enabled: enabled,
+          },
+          { onConflict: 'user_id' }
+        );
+
+      setHelpEnabled(enabled);
+    } catch (error) {
+      console.error('Error updating help settings:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadHelpSettings();
+  }, []);
+
+  return {
+    isHelpMode,
+    helpEnabled,
+    activeTooltip,
+    toggleHelpMode, // <-- Trigger this via a RN button, not a keypress
+    showTooltip,
+    hideTooltip,
+    getHelpContent,
+    updateHelpSettings,
+  };
+};
+
+
+usehelp loading state
+✅ Usage in RN Components
+tsx
+Copy
+Edit
+import React from "react";
+import { View, ActivityIndicator, Text, Button } from "react-native";
+import { useLoadingState } from "@/hooks/useLoadingState";
+
+export default function Example() {
+  const { isLoading, error, withLoading } = useLoadingState();
+
+  const handleFetchData = () =>
+    withLoading(async () => {
+      await new Promise((res) => setTimeout(res, 2000)); // simulate API
+      throw new Error("Something went wrong!");
+    });
+
+  return (
+    <View style={{ padding: 20 }}>
+      {isLoading && <ActivityIndicator size="large" color="#6C4EE3" />}
+      {error && <Text style={{ color: "red" }}>{error}</Text>}
+      <Button title="Load Data" onPress={handleFetchData} />
+    </View>
+  );
+}
+
+
+
+mobile
+✅ Usage in RN
+tsx
+Copy
+Edit
+import React from "react";
+import { View, Text } from "react-native";
+import { useIsMobile } from "@/hooks/useIsMobile";
+
+export default function Example() {
+  const isMobile = useIsMobile();
+
+  return (
+    <View>
+      <Text>{isMobile ? "Mobile layout" : "Tablet/Desktop layout"}</Text>
+    </View>
+  );
+}
+ 
+
+ Converting Your Toast Hook to React Native (Expo)
+The toast system you provided is designed for web, using a custom state manager. In React Native, you don’t need to reimplement this because we can leverage react-native-toast-message, which is optimized for Expo and mobile UI.
+
+🔥 React Native / Expo Alternative
+Replace your entire toast system with:
+
+1. Install Toast Library
+bash
+Copy
+Edit
+expo install react-native-toast-message
+2. Toast Config (App.tsx or main entry file)
+tsx
+Copy
+Edit
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from './toastConfig'; // optional if you want custom styles
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      {/* Your app screens */}
+      <Toast config={toastConfig} />
+    </NavigationContainer>
+  );
+}
+3. Replace useToast with a Simple Wrapper
+Instead of your complex reducer, use this RN-friendly hook:
+
+tsx
+Copy
+Edit
+import Toast from 'react-native-toast-message';
+
+export const useToast = () => {
+  const showToast = (type: 'success' | 'error' | 'info', title: string, description?: string) => {
+    Toast.show({
+      type,
+      text1: title,
+      text2: description,
+      position: 'top'
+    });
+  };
+
+  const dismissToast = () => {
+    Toast.hide();
+  };
+
+  return {
+    toast: showToast,
+    dismiss: dismissToast
+  };
+};
+4. Usage Example
+Replace:
+
+tsx
+Copy
+Edit
+const { toast } = useToast();
+
+toast({
+  title: "Onboarding Complete!",
+  description: "You're all set to start using EchoSelf.",
+});
+with:
+
+tsx
+Copy
+Edit
+const { toast } = useToast();
+
+toast('success', "Onboarding Complete!", "You're all set to start using EchoSelf.");
+✅ Why Drop the Old Toast Logic?
+The Web Version Depends on DOM & CSS (open, onOpenChange, data-tour attributes).
+
+React Native Requires a Native Component (cannot use your @/components/ui/toast).
+
+react-native-toast-message Handles Animations + Mobile Design Out of the Box.
+
+⚡ Next Steps
+Do you want me to:
+
+✅ Rewrite all hooks (useToast, useOnboarding, etc.) to use this RN-friendly toast?
+
+
+

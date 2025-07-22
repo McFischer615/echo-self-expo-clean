@@ -1,0 +1,23 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "App.tsx",
+    "src",
+    "screens",
+    "components"
+  ],
+  "exclude": [
+    "node_modules",
+    "public",
+    "dist",
+    "web"
+  ]
+}
