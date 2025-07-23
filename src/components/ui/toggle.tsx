@@ -1,12 +1,26 @@
 // components/ui/toggle.tsx
 import React, { useState } from "react";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import styled, { css } from "styled-components/native";
 
 interface ToggleProps {
   label: string;
   initial?: boolean;
   onToggle?: (state: boolean) => void;
 }
+
+const ToggleButton = styled.TouchableOpacity<{ active: boolean }>`
+  padding-vertical: 8px;
+  padding-horizontal: 14px;
+  border-radius: 6px;
+  border-width: 1px;
+  border-color: ${({ active }) => (active ? "#6C4EE3" : "#ccc")};
+  background-color: ${({ active }) => (active ? "#6C4EE3" : "#f5f5f5")};
+`;
+
+const Label = styled.Text<{ active: boolean }>`
+  font-weight: 600;
+  color: ${({ active }) => (active ? "#fff" : "#333")};
+`;
 
 export const Toggle: React.FC<ToggleProps> = ({ label, initial = false, onToggle }) => {
   const [active, setActive] = useState(initial);
@@ -18,30 +32,8 @@ export const Toggle: React.FC<ToggleProps> = ({ label, initial = false, onToggle
   };
 
   return (
-    <TouchableOpacity
-      style={[styles.toggle, active ? styles.active : styles.inactive]}
-      onPress={toggle}
-    >
-      <Text style={[styles.text, active && { color: "#fff" }]}>{label}</Text>
-    </TouchableOpacity>
+    <ToggleButton active={active} onPress={toggle}>
+      <Label active={active}>{label}</Label>
+    </ToggleButton>
   );
 };
-
-const styles = StyleSheet.create({
-  toggle: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    backgroundColor: "transparent",
-  },
-  active: {
-    backgroundColor: "#6C4EE3",
-    borderColor: "#6C4EE3",
-  },
-  inactive: {
-    backgroundColor: "#f5f5f5",
-  },
-  text: { fontWeight: "600", color: "#333" },
-});

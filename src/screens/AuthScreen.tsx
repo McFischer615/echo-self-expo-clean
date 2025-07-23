@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, ActivityIndicator, Alert } from "react-native";
+import { ActivityIndicator, Alert } from "react-native";
 import { supabase } from "../services/supabaseClient";
 import { echoselfTheme } from "@/theme/echoself-theme";
 import { Button, Card } from "@/components/ui";
+import styled from "styled-components/native";
 
 const AuthScreen: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -32,12 +33,11 @@ const AuthScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Card style={styles.authCard}>
-        <Text style={styles.header}>Sign In</Text>
+    <Container>
+      <Card style={{ padding: echoselfTheme.spacing.md }}>
+        <HeaderText>Sign In</HeaderText>
 
-        <TextInput
-          style={styles.input}
+        <StyledInput
           placeholder="Email"
           placeholderTextColor={echoselfTheme.colors.textSecondary}
           value={email}
@@ -46,8 +46,7 @@ const AuthScreen: React.FC = () => {
           keyboardType="email-address"
         />
 
-        <TextInput
-          style={styles.input}
+        <StyledInput
           placeholder="Password"
           placeholderTextColor={echoselfTheme.colors.textSecondary}
           secureTextEntry
@@ -56,41 +55,49 @@ const AuthScreen: React.FC = () => {
         />
 
         {loading ? (
-          <ActivityIndicator size="small" color={echoselfTheme.colors.primary} style={{ marginTop: echoselfTheme.spacing.sm }} />
+          <ActivityIndicator
+            size="small"
+            color={echoselfTheme.colors.primary}
+            style={{ marginTop: echoselfTheme.spacing.sm }}
+          />
         ) : (
-          <Button title="Sign In" onPress={handleSignIn} style={{ marginTop: echoselfTheme.spacing.sm }} />
+          <Button
+            title="Sign In"
+            onPress={handleSignIn}
+            style={{ marginTop: echoselfTheme.spacing.sm }}
+          />
         )}
       </Card>
-    </View>
+    </Container>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: echoselfTheme.colors.surface,
-    justifyContent: "center",
-    padding: echoselfTheme.spacing.lg,
-  },
-  authCard: {
-    padding: echoselfTheme.spacing.md,
-  },
-  header: {
-    fontSize: echoselfTheme.typography.heading.fontSize,
-    fontWeight: "bold",
-    color: echoselfTheme.colors.primary,
-    marginBottom: echoselfTheme.spacing.md,
-    textAlign: "center",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: echoselfTheme.colors.muted,
-    borderRadius: echoselfTheme.radius.sm,
-    padding: echoselfTheme.spacing.sm,
-    marginBottom: echoselfTheme.spacing.sm,
-    color: echoselfTheme.colors.text,
-    backgroundColor: echoselfTheme.colors.background,
-  },
-});
-
 export default AuthScreen;
+
+//
+// ✅ Styled Components
+//
+const Container = styled.View`
+  flex: 1;
+  background-color: ${echoselfTheme.colors.surface};
+  justify-content: center;
+  padding: ${echoselfTheme.spacing.lg}px;
+`;
+
+const HeaderText = styled.Text`
+  font-size: ${echoselfTheme.typography.heading.fontSize}px;
+  font-weight: bold;
+  color: ${echoselfTheme.colors.primary};
+  margin-bottom: ${echoselfTheme.spacing.md}px;
+  text-align: center;
+`;
+
+const StyledInput = styled.TextInput`
+  border-width: 1px;
+  border-color: ${echoselfTheme.colors.muted};
+  border-radius: ${echoselfTheme.radius.sm}px;
+  padding: ${echoselfTheme.spacing.sm}px;
+  margin-bottom: ${echoselfTheme.spacing.sm}px;
+  color: ${echoselfTheme.colors.text};
+  background-color: ${echoselfTheme.colors.background};
+`;

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, FlatList } from "react-native";
+import { ActivityIndicator, FlatList } from "react-native";
 import { supabase } from "../services/supabaseClient";
 import { echoselfTheme } from "@/theme/echoself-theme";
 import { Card, Button } from "@/components/ui";
+import styled from "styled-components/native";
 
 interface ApiRoute {
   id: string;
@@ -40,88 +41,101 @@ const ApiGatewayScreen: React.FC = () => {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <LoadingContainer>
         <ActivityIndicator size="large" color={echoselfTheme.colors.primary} />
-        <Text style={styles.loadingText}>Loading API Gateway Data...</Text>
-      </View>
+        <LoadingText>Loading API Gateway Data...</LoadingText>
+      </LoadingContainer>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerRow}>
-        <Text style={styles.header}>API Gateway</Text>
+    <Container>
+      <HeaderRow>
+        <HeaderText>API Gateway</HeaderText>
         <Button title="Refresh" onPress={handleRefresh} style={{ width: 100 }} />
-      </View>
+      </HeaderRow>
 
       <FlatList
         data={routes}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Card style={styles.routeCard}>
-            <View style={styles.routeHeader}>
-              <Text style={styles.routeName}>{item.name}</Text>
-              <View
-                style={[
-                  styles.statusDot,
-                  {
-                    backgroundColor:
-                      item.status === "active"
-                        ? echoselfTheme.colors.success
-                        : echoselfTheme.colors.error,
-                  },
-                ]}
+          <Card style={{ marginBottom: echoselfTheme.spacing.sm, padding: echoselfTheme.spacing.sm }}>
+            <RouteHeader>
+              <RouteName>{item.name}</RouteName>
+              <StatusDot
+                color={
+                  item.status === "active"
+                    ? echoselfTheme.colors.success
+                    : echoselfTheme.colors.error
+                }
               />
-            </View>
-            <Text style={styles.routeDetail}>
+            </RouteHeader>
+            <RouteDetail>
               Requests: {item.request_count} | Latency: {item.latency}ms
-            </Text>
+            </RouteDetail>
           </Card>
         )}
       />
-    </View>
+    </Container>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: echoselfTheme.colors.surface,
-    padding: echoselfTheme.spacing.md,
-  },
-  loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
-  loadingText: { marginTop: 8, color: echoselfTheme.colors.textSecondary },
-  headerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: echoselfTheme.spacing.md,
-  },
-  header: {
-    fontSize: echoselfTheme.typography.heading.fontSize,
-    fontWeight: "bold",
-    color: echoselfTheme.colors.primary,
-  },
-  routeCard: {
-    marginBottom: echoselfTheme.spacing.sm,
-    padding: echoselfTheme.spacing.sm,
-  },
-  routeHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 4,
-  },
-  routeName: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: echoselfTheme.colors.text,
-  },
-  statusDot: { width: 10, height: 10, borderRadius: 5 },
-  routeDetail: {
-    fontSize: 12,
-    color: echoselfTheme.colors.textSecondary,
-  },
-});
-
 export default ApiGatewayScreen;
+
+//
+// ✅ Styled Components
+//
+const Container = styled.View`
+  flex: 1;
+  background-color: ${echoselfTheme.colors.surface};
+  padding: ${echoselfTheme.spacing.md}px;
+`;
+
+const LoadingContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+const LoadingText = styled.Text`
+  margin-top: 8px;
+  color: ${echoselfTheme.colors.textSecondary};
+`;
+
+const HeaderRow = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${echoselfTheme.spacing.md}px;
+`;
+
+const HeaderText = styled.Text`
+  font-size: ${echoselfTheme.typography.heading.fontSize}px;
+  font-weight: bold;
+  color: ${echoselfTheme.colors.primary};
+`;
+
+const RouteHeader = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+`;
+
+const RouteName = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
+  color: ${echoselfTheme.colors.text};
+`;
+
+const StatusDot = styled.View<{ color: string }>`
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: ${({ color }) => color};
+`;
+
+const RouteDetail = styled.Text`
+  font-size: 12px;
+  color: ${echoselfTheme.colors.textSecondary};
+`;

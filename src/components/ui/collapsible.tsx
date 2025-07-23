@@ -1,38 +1,38 @@
-// components/ui/collapsible.tsx
 import React, { useState } from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { View, TouchableOpacity, Text } from "react-native";
 import Collapsible from "react-native-collapsible";
+import styled from "styled-components/native";
 
 interface CollapsibleProps {
   title: string;
   children: React.ReactNode;
 }
 
+const Container = styled(View)`
+  margin-vertical: 4px;
+`;
+
+const Title = styled(Text)`
+  font-size: 16px;
+  font-weight: 600;
+  color: #6c4ee3;
+`;
+
+const Content = styled(View)`
+  padding-vertical: 6px;
+`;
+
 export const CollapsibleComponent: React.FC<CollapsibleProps> = ({ title, children }) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <View style={styles.container}>
+    <Container>
       <TouchableOpacity onPress={() => setOpen(!open)}>
-        <Text style={styles.title}>{title}</Text>
+        <Title>{title}</Title>
       </TouchableOpacity>
       <Collapsible collapsed={!open}>
-        <View style={styles.content}>{children}</View>
+        <Content>{children}</Content>
       </Collapsible>
-    </View>
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    marginVertical: 4,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#6C4EE3",
-  },
-  content: {
-    paddingVertical: 6,
-  },
-});

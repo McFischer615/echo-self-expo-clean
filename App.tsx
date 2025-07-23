@@ -2,8 +2,11 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { TailwindProvider } from "nativewind";
+import { ThemeProvider } from "styled-components/native";
 import Toast from "react-native-toast-message";
+
+// ✅ Theme
+import { echoselfTheme } from "@/theme/echoself-theme";
 
 // ✅ Screens
 import HomeScreen from "./screens/HomeScreen";
@@ -21,7 +24,7 @@ const queryClient = new QueryClient();
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TailwindProvider>
+      <ThemeProvider theme={echoselfTheme}>
         <NavigationContainer>
           <Stack.Navigator
             initialRouteName="HomeScreen"
@@ -45,7 +48,8 @@ export default function App() {
 
         {/* ✅ Toast outside navigation */}
         <Toast />
-      </TailwindProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
+

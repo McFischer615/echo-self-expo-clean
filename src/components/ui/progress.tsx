@@ -1,23 +1,21 @@
-// components/ui/progress.tsx
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import styled from "styled-components/native";
 
 export const Progress: React.FC<{ value: number }> = ({ value }) => (
-  <View style={styles.container}>
-    <View style={[styles.bar, { width: `${value}%` }]} />
-  </View>
+  <Container>
+    <Bar style={{ width: `${value}%` }} />
+  </Container>
 );
 
-const styles = StyleSheet.create({
-  container: {
-    height: 8,
-    width: "100%",
-    backgroundColor: "#eee",
-    borderRadius: 4,
-  },
-  bar: {
-    height: "100%",
-    backgroundColor: "#6C4EE3",
-    borderRadius: 4,
-  },
-});
+const Container = styled.View`
+  height: 8px;
+  width: 100%;
+  background-color: #eee;
+  border-radius: 4px;
+`;
+
+const Bar = styled.View`
+  height: 100%;
+  background-color: #6c4ee3;
+  border-radius: 4px;
+`;

@@ -1,17 +1,15 @@
-// components/ui/input.tsx
 import React from "react";
-import { TextInput, StyleSheet, TextInputProps } from "react-native";
+import styled from "styled-components/native";
+import { TextInputProps } from "react-native";
+
+const StyledInput = styled.TextInput`
+  border-width: 1px;
+  border-color: #ccc;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 14px;
+`;
 
 export const Input: React.FC<TextInputProps> = (props) => (
-  <TextInput style={styles.input} {...props} />
+  <StyledInput {...props} />
 );
-
-const styles = StyleSheet.create({
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 6,
-    padding: 10,
-    fontSize: 14,
-  },
-});

@@ -1,22 +1,16 @@
 // components/ui/textarea.tsx
 import React from "react";
-import { TextInput, StyleSheet, TextInputProps } from "react-native";
+import styled from "styled-components/native";
+import { TextInputProps } from "react-native";
 
 export const Textarea: React.FC<TextInputProps> = (props) => (
-  <TextInput
-    style={styles.textarea}
-    multiline
-    numberOfLines={4}
-    {...props}
-  />
+  <StyledTextarea multiline numberOfLines={4} {...props} />
 );
 
-const styles = StyleSheet.create({
-  textarea: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 6,
-    padding: 10,
-    textAlignVertical: "top",
-  },
-});
+const StyledTextarea = styled.TextInput`
+  border-width: 1px;
+  border-color: #ccc;
+  border-radius: 6px;
+  padding: 10px;
+  text-align-vertical: top;
+`;

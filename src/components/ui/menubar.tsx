@@ -1,4 +1,3 @@
-// components/ui/menubar.tsx
 import React, { useState } from "react";
 import { View } from "react-native";
 import { Menu, Button } from "react-native-paper";

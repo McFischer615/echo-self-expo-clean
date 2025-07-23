@@ -1,11 +1,12 @@
 // components/ui/resizable.tsx
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import styled from "styled-components/native";
+
+const Container = styled.View`
+  flex-direction: row;
+  flex: 1;
+`;
 
 export const ResizablePanelGroup: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <View style={styles.container}>{children}</View>
+  <Container>{children}</Container>
 );
-
-const styles = StyleSheet.create({
-  container: { flexDirection: "row", flex: 1 },
-});

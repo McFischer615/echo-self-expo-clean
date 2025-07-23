@@ -1,7 +1,7 @@
-// components/ui/drawer.tsx
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { Text } from "react-native";
 import Modal from "react-native-modal";
+import styled from "styled-components/native";
 
 interface DrawerProps {
   visible: boolean;
@@ -10,22 +10,29 @@ interface DrawerProps {
   children: React.ReactNode;
 }
 
+const ModalWrapper = styled(Modal).attrs({
+  style: { justifyContent: "flex-end", margin: 0 },
+  onBackdropPress: (props: DrawerProps) => props.onClose,
+})``;
+
+const Container = styled.View`
+  background-color: #fff;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  padding: 16px;
+`;
+
+const Title = styled.Text`
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+`;
+
 export const Drawer: React.FC<DrawerProps> = ({ visible, onClose, title, children }) => (
-  <Modal isVisible={visible} onBackdropPress={onClose} style={styles.modal}>
-    <View style={styles.container}>
-      {title && <Text style={styles.title}>{title}</Text>}
+  <Modal isVisible={visible} onBackdropPress={onClose} style={{ justifyContent: "flex-end", margin: 0 }}>
+    <Container>
+      {title && <Title>{title}</Title>}
       {children}
-    </View>
+    </Container>
   </Modal>
 );
-
-const styles = StyleSheet.create({
-  modal: { justifyContent: "flex-end", margin: 0 },
-  container: {
-    backgroundColor: "#fff",
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-    padding: 16,
-  },
-  title: { fontSize: 18, fontWeight: "600", marginBottom: 8 },
-});

@@ -1,5 +1,6 @@
-// /src/theme/echoself-theme.ts
-export const echoselfTheme = {
+import { DefaultTheme } from "styled-components/native";
+
+export const echoselfTheme: DefaultTheme = {
   colors: {
     primary: "#6C4EE3",
     secondary: "#9A7FF0",
@@ -26,8 +27,8 @@ export const echoselfTheme = {
     lg: 16,
   },
   typography: {
-    heading: { fontSize: 20, fontWeight: "700" },
-    subheading: { fontSize: 16, fontWeight: "600" },
-    body: { fontSize: 14, fontWeight: "400" },
+    heading: { fontSize: 20, fontWeight: "700" as "700" },
+    subheading: { fontSize: 16, fontWeight: "600" as "600" },
+    body: { fontSize: 14, fontWeight: "400" as "400" },
   },
 };

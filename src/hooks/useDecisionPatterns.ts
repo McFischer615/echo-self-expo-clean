@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { supabase } from "@/supabase/client"; // ✅ RN-safe client (ensure AsyncStorage is used in client.ts)
+import { supabase } from "@/supabase/client"; // ✅ Ensure RN-safe (AsyncStorage in client)
 import { useEnhancedContext } from "./useEnhancedContext";
 
 interface DecisionPattern {
@@ -23,11 +23,12 @@ export const useDecisionPatterns = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { getSimilarContext, storeContextEmbedding } = useEnhancedContext();
 
-  /** ✅ Store decision pattern */
+  /** ✅ Store new decision pattern */
   const analyzeDecisionPattern = useCallback(
     async (decisionContext: string, userChoice: string, outcome: string): Promise<string | null> => {
       try {
         setIsLoading(true);
+
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         if (userError || !user) return null;
 
@@ -52,6 +53,7 @@ export const useDecisionPatterns = () => {
           return null;
         }
 
+        // ✅ Store embedding for context similarity search
         await storeContextEmbedding(
           `decision_${Date.now()}`,
           `Decision: ${decisionContext} | Choice: ${userChoice} | Outcome: ${outcome}`,
@@ -60,8 +62,8 @@ export const useDecisionPatterns = () => {
         );
 
         return data.id;
-      } catch (error: any) {
-        console.error("Error in analyzeDecisionPattern:", JSON.stringify(error));
+      } catch (err: any) {
+        console.error("Error in analyzeDecisionPattern:", JSON.stringify(err));
         return null;
       } finally {
         setIsLoading(false);
@@ -70,7 +72,7 @@ export const useDecisionPatterns = () => {
     [storeContextEmbedding]
   );
 
-  /** ✅ Generate suggestions */
+  /** ✅ Generate suggestions based on patterns & similar contexts */
   const getDecisionSuggestions = useCallback(
     async (currentContext: string): Promise<DecisionSuggestion[]> => {
       try {
@@ -94,8 +96,8 @@ export const useDecisionPatterns = () => {
         if (error || !decisionPatterns) return [];
 
         return generateDecisionSuggestions(currentContext, decisionPatterns, similarContexts);
-      } catch (error: any) {
-        console.error("Error getting decision suggestions:", JSON.stringify(error));
+      } catch (err: any) {
+        console.error("Error getting decision suggestions:", JSON.stringify(err));
         return [];
       }
     },
@@ -129,8 +131,8 @@ export const useDecisionPatterns = () => {
           created_at: pattern.created_at,
         };
       });
-    } catch (error: any) {
-      console.error("Error getting decision patterns:", JSON.stringify(error));
+    } catch (err: any) {
+      console.error("Error getting decision patterns:", JSON.stringify(err));
       return [];
     }
   }, []);
@@ -161,7 +163,6 @@ export const useDecisionPatterns = () => {
     similarContexts: any[]
   ): DecisionSuggestion[] => {
     const suggestions: DecisionSuggestion[] = [];
-
     const patternsByType = patterns.reduce((acc, p) => {
       const type = p.data_value?.pattern_type || "general";
       if (!acc[type]) acc[type] = [];

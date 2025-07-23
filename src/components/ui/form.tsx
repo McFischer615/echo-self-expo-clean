@@ -1,20 +1,34 @@
 // components/ui/form.tsx
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import styled from "styled-components/native";
 import { Controller, useForm, FormProvider } from "react-hook-form";
 
 export { Controller, useForm, FormProvider };
 
-export const FormField = ({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) => (
-  <View style={styles.container}>
-    <Text style={styles.label}>{label}</Text>
+interface FormFieldProps {
+  label: string;
+  error?: string;
+  children: React.ReactNode;
+}
+
+export const FormField: React.FC<FormFieldProps> = ({ label, error, children }) => (
+  <Container>
+    <Label>{label}</Label>
     {children}
-    {error && <Text style={styles.error}>{error}</Text>}
-  </View>
+    {error && <ErrorText>{error}</ErrorText>}
+  </Container>
 );
 
-const styles = StyleSheet.create({
-  container: { marginBottom: 10 },
-  label: { fontWeight: "600", marginBottom: 4 },
-  error: { color: "red", fontSize: 12 },
-});
+const Container = styled.View`
+  margin-bottom: 10px;
+`;
+
+const Label = styled.Text`
+  font-weight: 600;
+  margin-bottom: 4px;
+`;
+
+const ErrorText = styled.Text`
+  color: red;
+  font-size: 12px;
+`;

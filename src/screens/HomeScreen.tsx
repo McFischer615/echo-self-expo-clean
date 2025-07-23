@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from "react-native";
+import { ScrollView, TouchableOpacity, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { echoselfTheme } from "@/theme/echoself-theme";
 import { Card } from "@/components/ui";
+import styled from "styled-components/native";
 
 const HomeScreen: React.FC = () => {
   const quickActions = [
@@ -29,92 +30,90 @@ const HomeScreen: React.FC = () => {
   ];
 
   return (
-    <ScrollView style={styles.container}>
-      <Card style={styles.heroCard}>
-        <Image
+    <Container>
+      <Card style={{ alignItems: "center", padding: echoselfTheme.spacing.lg, marginBottom: echoselfTheme.spacing.md }}>
+        <HeroImage
           source={require("@/assets/images/echoself_logo.png")}
-          style={styles.heroImage}
           resizeMode="contain"
         />
-        <Text style={styles.heroTitle}>Welcome to EchoSelf</Text>
-        <Text style={styles.heroSubtitle}>
+        <HeroTitle>Welcome to EchoSelf</HeroTitle>
+        <HeroSubtitle>
           Your personal AI-driven behavioral twin for smarter decisions.
-        </Text>
+        </HeroSubtitle>
       </Card>
 
-      <Text style={styles.sectionHeader}>Quick Actions</Text>
-      <View style={styles.actionsGrid}>
+      <SectionHeader>Quick Actions</SectionHeader>
+      <ActionsGrid>
         {quickActions.map((action, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.actionButton}
-            onPress={action.onPress}
-          >
+          <ActionButton key={index} onPress={action.onPress}>
             <Ionicons
               name={action.icon as any}
               size={28}
               color={echoselfTheme.colors.primary}
             />
-            <Text style={styles.actionLabel}>{action.label}</Text>
-          </TouchableOpacity>
+            <ActionLabel>{action.label}</ActionLabel>
+          </ActionButton>
         ))}
-      </View>
-    </ScrollView>
+      </ActionsGrid>
+    </Container>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: echoselfTheme.colors.surface,
-    padding: echoselfTheme.spacing.md,
-  },
-  heroCard: {
-    alignItems: "center",
-    padding: echoselfTheme.spacing.lg,
-    marginBottom: echoselfTheme.spacing.md,
-  },
-  heroImage: {
-    width: 100,
-    height: 100,
-    marginBottom: echoselfTheme.spacing.sm,
-  },
-  heroTitle: {
-    fontSize: echoselfTheme.typography.heading.fontSize,
-    fontWeight: "bold",
-    color: echoselfTheme.colors.primary,
-    textAlign: "center",
-  },
-  heroSubtitle: {
-    fontSize: 14,
-    color: echoselfTheme.colors.textSecondary,
-    textAlign: "center",
-    marginTop: 4,
-  },
-  sectionHeader: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: echoselfTheme.colors.text,
-    marginVertical: echoselfTheme.spacing.sm,
-  },
-  actionsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
-  actionButton: {
-    width: "48%",
-    backgroundColor: echoselfTheme.colors.background,
-    borderRadius: echoselfTheme.radius.md,
-    alignItems: "center",
-    paddingVertical: echoselfTheme.spacing.md,
-    marginBottom: echoselfTheme.spacing.sm,
-  },
-  actionLabel: {
-    fontSize: 12,
-    color: echoselfTheme.colors.text,
-    marginTop: 4,
-  },
-});
-
 export default HomeScreen;
+
+//
+// ✅ Styled Components
+//
+const Container = styled(ScrollView)`
+  flex: 1;
+  background-color: ${echoselfTheme.colors.surface};
+  padding: ${echoselfTheme.spacing.md}px;
+`;
+
+const HeroImage = styled(Image)`
+  width: 100px;
+  height: 100px;
+  margin-bottom: ${echoselfTheme.spacing.sm}px;
+`;
+
+const HeroTitle = styled.Text`
+  font-size: ${echoselfTheme.typography.heading.fontSize}px;
+  font-weight: bold;
+  color: ${echoselfTheme.colors.primary};
+  text-align: center;
+`;
+
+const HeroSubtitle = styled.Text`
+  font-size: 14px;
+  color: ${echoselfTheme.colors.textSecondary};
+  text-align: center;
+  margin-top: 4px;
+`;
+
+const SectionHeader = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
+  color: ${echoselfTheme.colors.text};
+  margin-vertical: ${echoselfTheme.spacing.sm}px;
+`;
+
+const ActionsGrid = styled.View`
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+`;
+
+const ActionButton = styled(TouchableOpacity)`
+  width: 48%;
+  background-color: ${echoselfTheme.colors.background};
+  border-radius: ${echoselfTheme.radius.md}px;
+  align-items: center;
+  padding-vertical: ${echoselfTheme.spacing.md}px;
+  margin-bottom: ${echoselfTheme.spacing.sm}px;
+`;
+
+const ActionLabel = styled.Text`
+  font-size: 12px;
+  color: ${echoselfTheme.colors.text};
+  margin-top: 4px;
+`;

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/supabase/client"; // ✅ RN Expo-ready client with AsyncStorage
-// Ensure your /supabase/client.ts uses AsyncStorage (I’ll give you that below)
+import { supabase } from "@/supabase/client"; // ✅ Ensure client uses AsyncStorage for RN
 
 interface AnalyticsData {
   totalInteractions: number;
@@ -20,7 +19,7 @@ export const useAnalytics = () => {
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<AnalyticsFilter>({ dateRange: "30d" });
 
-  /** ✅ Tracks interaction data in Supabase (RN-safe) */
+  /** ✅ Tracks interaction data in Supabase */
   const trackInteraction = async (
     echoId: string,
     interactionType: string,
@@ -46,16 +45,15 @@ export const useAnalytics = () => {
       });
 
       if (error) console.error("Error tracking interaction:", error.message);
-    } catch (error: any) {
-      console.error("Error tracking interaction:", JSON.stringify(error));
+    } catch (err) {
+      console.error("Error tracking interaction:", JSON.stringify(err));
     }
   };
 
-  /** ✅ Fetches analytics with RN-safe date handling */
+  /** ✅ Fetches analytics with filters */
   const fetchAnalytics = async () => {
     try {
       setLoading(true);
-
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) {
         setLoading(false);
@@ -64,14 +62,15 @@ export const useAnalytics = () => {
 
       let query = supabase.from("echo_analytics").select("*").eq("user_id", user.id);
 
+      // ✅ Date range filter
       if (filter.dateRange !== "all") {
-        const days =
-          filter.dateRange === "7d" ? 7 : filter.dateRange === "30d" ? 30 : 90;
+        const days = filter.dateRange === "7d" ? 7 : filter.dateRange === "30d" ? 30 : 90;
         const sinceDate = new Date();
         sinceDate.setDate(sinceDate.getDate() - days);
         query = query.gte("created_at", sinceDate.toISOString());
       }
 
+      // ✅ Echo-specific filter
       if (filter.echoId) {
         query = query.eq("echo_id", filter.echoId);
       }
@@ -82,18 +81,16 @@ export const useAnalytics = () => {
         return;
       }
 
-      // ✅ Total Interactions
+      // ✅ Total interactions
       const totalInteractions = interactions.length;
 
-      // ✅ Average Response Quality
+      // ✅ Average response quality
       const qualityInteractions = interactions.filter((i) => i.response_quality_score);
       const averageResponseQuality =
-        qualityInteractions.reduce(
-          (acc, i) => acc + (i.response_quality_score || 0),
-          0
-        ) / (qualityInteractions.length || 1);
+        qualityInteractions.reduce((acc, i) => acc + (i.response_quality_score || 0), 0) /
+        (qualityInteractions.length || 1);
 
-      // ✅ Top Topics
+      // ✅ Top topics
       const topicCounts: Record<string, number> = {};
       interactions.forEach((i) => {
         if (Array.isArray(i.topics)) {
@@ -107,7 +104,7 @@ export const useAnalytics = () => {
         .slice(0, 5)
         .map(([topic]) => topic);
 
-      // ✅ Conversation Trends
+      // ✅ Conversation trends by date
       const trendData: Record<string, number> = {};
       interactions.forEach((i) => {
         const date = new Date(i.created_at).toISOString().split("T")[0];
@@ -117,7 +114,7 @@ export const useAnalytics = () => {
         .sort(([a], [b]) => a.localeCompare(b))
         .map(([date, count]) => ({ date, count }));
 
-      // ✅ Echo Performance
+      // ✅ Echo performance metrics
       const echoPerformanceMap: Record<
         string,
         { totalInteractions: number; totalQuality: number; qualityCount: number }
@@ -125,11 +122,7 @@ export const useAnalytics = () => {
       interactions.forEach((i) => {
         if (!i.echo_id) return;
         if (!echoPerformanceMap[i.echo_id]) {
-          echoPerformanceMap[i.echo_id] = {
-            totalInteractions: 0,
-            totalQuality: 0,
-            qualityCount: 0,
-          };
+          echoPerformanceMap[i.echo_id] = { totalInteractions: 0, totalQuality: 0, qualityCount: 0 };
         }
         echoPerformanceMap[i.echo_id].totalInteractions++;
         if (i.response_quality_score) {
@@ -137,18 +130,14 @@ export const useAnalytics = () => {
           echoPerformanceMap[i.echo_id].qualityCount++;
         }
       });
-      const echoPerformance = Object.entries(echoPerformanceMap).map(
-        ([echoId, data]) => ({
-          echoId,
-          accuracy:
-            data.qualityCount > 0
-              ? data.totalQuality / data.qualityCount
-              : 0,
-          interactions: data.totalInteractions,
-        })
-      );
 
-      // ✅ Save to State
+      const echoPerformance = Object.entries(echoPerformanceMap).map(([echoId, data]) => ({
+        echoId,
+        accuracy: data.qualityCount > 0 ? data.totalQuality / data.qualityCount : 0,
+        interactions: data.totalInteractions,
+      }));
+
+      // ✅ Save to state
       setAnalyticsData({
         totalInteractions,
         averageResponseQuality,
@@ -156,13 +145,14 @@ export const useAnalytics = () => {
         conversationTrends,
         echoPerformance,
       });
-    } catch (error: any) {
-      console.error("Error fetching analytics:", JSON.stringify(error));
+    } catch (err) {
+      console.error("Error fetching analytics:", JSON.stringify(err));
     } finally {
       setLoading(false);
     }
   };
 
+  /** ✅ Update filters and re-fetch */
   const updateFilter = (newFilter: Partial<AnalyticsFilter>) =>
     setFilter((prev) => ({ ...prev, ...newFilter }));
 

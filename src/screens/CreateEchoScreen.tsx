@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, Alert, ActivityIndicator } from "react-native";
+import { Alert, ActivityIndicator } from "react-native";
 import { supabase } from "../services/supabaseClient";
 import { echoselfTheme } from "@/theme/echoself-theme";
 import { Button, Card } from "@/components/ui";
+import styled from "styled-components/native";
 
 const CreateEchoScreen: React.FC = () => {
   const [name, setName] = useState("");
@@ -40,20 +41,18 @@ const CreateEchoScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Card style={styles.formCard}>
-        <Text style={styles.header}>Create Echo</Text>
+    <Container>
+      <Card style={{ padding: echoselfTheme.spacing.md }}>
+        <Header>Create Echo</Header>
 
-        <TextInput
-          style={styles.input}
+        <StyledInput
           placeholder="Echo Name"
           placeholderTextColor={echoselfTheme.colors.textSecondary}
           value={name}
           onChangeText={setName}
         />
 
-        <TextInput
-          style={[styles.input, styles.textArea]}
+        <StyledTextArea
           placeholder="Description"
           placeholderTextColor={echoselfTheme.colors.textSecondary}
           value={description}
@@ -62,45 +61,54 @@ const CreateEchoScreen: React.FC = () => {
         />
 
         {loading ? (
-          <ActivityIndicator size="small" color={echoselfTheme.colors.primary} style={{ marginTop: echoselfTheme.spacing.sm }} />
+          <ActivityIndicator
+            size="small"
+            color={echoselfTheme.colors.primary}
+            style={{ marginTop: echoselfTheme.spacing.sm }}
+          />
         ) : (
-          <Button title="Create Echo" onPress={handleCreateEcho} style={{ marginTop: echoselfTheme.spacing.sm }} />
+          <Button
+            title="Create Echo"
+            onPress={handleCreateEcho}
+            style={{ marginTop: echoselfTheme.spacing.sm }}
+          />
         )}
       </Card>
-    </View>
+    </Container>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: echoselfTheme.colors.surface,
-    padding: echoselfTheme.spacing.lg,
-    justifyContent: "center",
-  },
-  formCard: {
-    padding: echoselfTheme.spacing.md,
-  },
-  header: {
-    fontSize: echoselfTheme.typography.heading.fontSize,
-    fontWeight: "bold",
-    color: echoselfTheme.colors.primary,
-    marginBottom: echoselfTheme.spacing.md,
-    textAlign: "center",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: echoselfTheme.colors.muted,
-    borderRadius: echoselfTheme.radius.sm,
-    padding: echoselfTheme.spacing.sm,
-    marginBottom: echoselfTheme.spacing.sm,
-    color: echoselfTheme.colors.text,
-    backgroundColor: echoselfTheme.colors.background,
-  },
-  textArea: {
-    height: 100,
-    textAlignVertical: "top",
-  },
-});
-
 export default CreateEchoScreen;
+
+//
+// ✅ Styled Components
+//
+const Container = styled.View`
+  flex: 1;
+  background-color: ${echoselfTheme.colors.surface};
+  padding: ${echoselfTheme.spacing.lg}px;
+  justify-content: center;
+`;
+
+const Header = styled.Text`
+  font-size: ${echoselfTheme.typography.heading.fontSize}px;
+  font-weight: bold;
+  color: ${echoselfTheme.colors.primary};
+  margin-bottom: ${echoselfTheme.spacing.md}px;
+  text-align: center;
+`;
+
+const StyledInput = styled.TextInput`
+  border-width: 1px;
+  border-color: ${echoselfTheme.colors.muted};
+  border-radius: ${echoselfTheme.radius.sm}px;
+  padding: ${echoselfTheme.spacing.sm}px;
+  margin-bottom: ${echoselfTheme.spacing.sm}px;
+  color: ${echoselfTheme.colors.text};
+  background-color: ${echoselfTheme.colors.background};
+`;
+
+const StyledTextArea = styled(StyledInput)`
+  height: 100px;
+  text-align-vertical: top;
+`;

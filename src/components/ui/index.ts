@@ -1,4 +1,6 @@
 // src/components/ui/index.ts
+
+// Core components
 export { Button } from "./button";
 export { Card, CardHeader, CardContent } from "./card";
 export { Input } from "./input";
@@ -8,7 +10,13 @@ export { Avatar } from "./avatar";
 export { Badge } from "./badge";
 export { AccordionItem } from "./accordion";
 export { Progress } from "./progress";
+
+// Feedback
 export { ToastProvider, showToast } from "./toaster";
+export { LoadingSpinner } from "./loading-spinner";
+export { Skeleton } from "./skeleton";
+
+// Layout & Display
 export { Tabs } from "./tabs";
 export { Table } from "./table";
 export { Calendar } from "./calendar";
@@ -21,13 +29,13 @@ export { ToggleGroup } from "./toggle-group";
 export { InputOTP } from "./input-otp";
 export { RadioGroup } from "./radio-group";
 export { Select } from "./select";
-export { Skeleton } from "./skeleton";
 export { Chart } from "./chart";
 export { ScrollArea } from "./scroll-area";
 export { AspectRatio } from "./aspect-ratio";
 export { Carousel } from "./carousel";
-export { LoadingSpinner } from "./loading-spinner";
 export { Pagination } from "./pagination";
+
+// Navigation & Structure
 export { Sidebar, SidebarItem } from "./sidebar";
 export { NavigationMenu } from "./navigation-menu";
 export { Sheet } from "./sheet";

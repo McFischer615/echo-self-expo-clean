@@ -1,6 +1,5 @@
-// components/ui/toggle-group.tsx
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import styled from "styled-components/native";
 import { Toggle } from "./toggle";
 
 interface ToggleGroupProps {
@@ -8,6 +7,11 @@ interface ToggleGroupProps {
   onChange?: (selected: string[]) => void;
   multiSelect?: boolean;
 }
+
+const Container = styled.View`
+  flex-direction: row;
+  gap: 8px;
+`;
 
 export const ToggleGroup: React.FC<ToggleGroupProps> = ({
   options,
@@ -29,7 +33,7 @@ export const ToggleGroup: React.FC<ToggleGroupProps> = ({
   };
 
   return (
-    <View style={styles.container}>
+    <Container>
       {options.map((label) => (
         <Toggle
           key={label}
@@ -38,10 +42,6 @@ export const ToggleGroup: React.FC<ToggleGroupProps> = ({
           onToggle={(state) => handleToggle(label, state)}
         />
       ))}
-    </View>
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flexDirection: "row", gap: 8 },
-});

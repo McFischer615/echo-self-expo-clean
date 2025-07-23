@@ -1,6 +1,5 @@
-// components/ui/pagination.tsx
 import React from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import styled from "styled-components/native";
 
 interface PaginationProps {
   currentPage: number;
@@ -8,34 +7,43 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
+const Container = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 8px;
+`;
+
+const ButtonText = styled.Text<{ disabled?: boolean }>`
+  color: ${({ disabled }) => (disabled ? "#aaa" : "#6C4EE3")};
+  font-weight: 600;
+`;
+
+const PageText = styled.Text`
+  font-weight: 500;
+`;
+
 export const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   onPageChange,
 }) => (
-  <View style={styles.container}>
-    <TouchableOpacity
+  <Container>
+    <ButtonText
       disabled={currentPage === 1}
-      onPress={() => onPageChange(currentPage - 1)}
+      onPress={() => currentPage > 1 && onPageChange(currentPage - 1)}
     >
-      <Text style={styles.button}>Prev</Text>
-    </TouchableOpacity>
+      Prev
+    </ButtonText>
 
-    <Text style={styles.text}>
+    <PageText>
       {currentPage} / {totalPages}
-    </Text>
+    </PageText>
 
-    <TouchableOpacity
+    <ButtonText
       disabled={currentPage === totalPages}
-      onPress={() => onPageChange(currentPage + 1)}
+      onPress={() => currentPage < totalPages && onPageChange(currentPage + 1)}
     >
-      <Text style={styles.button}>Next</Text>
-    </TouchableOpacity>
-  </View>
+      Next
+    </ButtonText>
+  </Container>
 );
-
-const styles = StyleSheet.create({
-  container: { flexDirection: "row", justifyContent: "space-between", padding: 8 },
-  button: { color: "#6C4EE3", fontWeight: "600" },
-  text: { fontWeight: "500" },
-});

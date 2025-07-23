@@ -1,11 +1,11 @@
 // components/ui/scroll-area.tsx
 import React from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import styled from "styled-components/native";
 
 export const ScrollArea: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <ScrollView style={styles.container}>{children}</ScrollView>
+  <StyledScrollArea>{children}</StyledScrollArea>
 );
 
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-});
+const StyledScrollArea = styled.ScrollView`
+  flex: 1;
+`;

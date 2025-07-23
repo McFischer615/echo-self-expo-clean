@@ -1,15 +1,17 @@
 // components/ui/skeleton.tsx
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import styled from "styled-components/native";
 
-export const Skeleton: React.FC<{ width?: number | string; height?: number }> = ({
-  width = "100%",
-  height = 20,
-}) => <View style={[styles.skeleton, { width, height }]} />;
+interface SkeletonProps {
+  width?: number | string;
+  height?: number;
+}
 
-const styles = StyleSheet.create({
-  skeleton: {
-    backgroundColor: "#e1e1e1",
-    borderRadius: 6,
-  },
-});
+export const Skeleton: React.FC<SkeletonProps> = ({ width = "100%", height = 20 }) => (
+  <StyledSkeleton style={{ width, height }} />
+);
+
+const StyledSkeleton = styled.View`
+  background-color: #e1e1e1;
+  border-radius: 6px;
+`;

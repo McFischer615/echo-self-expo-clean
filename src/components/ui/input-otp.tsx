@@ -1,13 +1,27 @@
 // components/ui/input-otp.tsx
 import React from "react";
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from "react-native-confirmation-code-field";
-import { StyleSheet } from "react-native";
+import styled from "styled-components/native";
 
 interface OTPProps {
   value: string;
   setValue: (v: string) => void;
   cellCount?: number;
 }
+
+const Root = styled.View`
+  margin-top: 10px;
+`;
+
+const Cell = styled.Text<{ isFocused: boolean }>`
+  width: 40px;
+  height: 40px;
+  border-width: 1px;
+  border-color: ${({ isFocused }) => (isFocused ? "#6C4EE3" : "#ccc")};
+  text-align: center;
+  line-height: 38px;
+  font-size: 20px;
+`;
 
 export const InputOTP: React.FC<OTPProps> = ({ value, setValue, cellCount = 6 }) => {
   const ref = useBlurOnFulfill({ value, cellCount });
@@ -20,26 +34,18 @@ export const InputOTP: React.FC<OTPProps> = ({ value, setValue, cellCount = 6 })
       value={value}
       onChangeText={setValue}
       cellCount={cellCount}
-      rootStyle={styles.root}
+      rootStyle={{ marginTop: 10 }}
       keyboardType="number-pad"
       renderCell={({ index, symbol, isFocused }) => (
-        <Text style={[styles.cell, isFocused && styles.focusCell]} onLayout={getCellOnLayoutHandler(index)} key={index}>
+        <Cell
+          isFocused={isFocused}
+          onLayout={getCellOnLayoutHandler(index)}
+          key={index}
+          testID={`otp-cell-${index}`}
+        >
           {symbol || (isFocused ? <Cursor /> : null)}
-        </Text>
+        </Cell>
       )}
     />
   );
 };
-
-const styles = StyleSheet.create({
-  root: { marginTop: 10 },
-  cell: {
-    width: 40,
-    height: 40,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    textAlign: "center",
-    lineHeight: 38,
-  },
-  focusCell: { borderColor: "#6C4EE3" },
-});

@@ -1,6 +1,23 @@
 // components/ui/hover-card.tsx
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import styled from "styled-components/native";
+
+const Container = styled.View``;
+
+const TriggerText = styled.Text`
+  color: #6c4ee3;
+  font-weight: 600;
+`;
+
+const Card = styled.View`
+  background-color: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  shadow-opacity: 0.1;
+  shadow-radius: 4px;
+  margin-top: 4px;
+  elevation: 3; /* for android shadow */
+`;
 
 interface HoverCardProps {
   trigger: string;
@@ -11,23 +28,9 @@ export const HoverCard: React.FC<HoverCardProps> = ({ trigger, content }) => {
   const [visible, setVisible] = useState(false);
 
   return (
-    <View>
-      <TouchableOpacity onPress={() => setVisible(!visible)}>
-        <Text style={styles.trigger}>{trigger}</Text>
-      </TouchableOpacity>
-      {visible && <View style={styles.card}><Text>{content}</Text></View>}
-    </View>
+    <Container>
+      <TriggerText onPress={() => setVisible(!visible)}>{trigger}</TriggerText>
+      {visible && <Card><Text>{content}</Text></Card>}
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  trigger: { color: "#6C4EE3", fontWeight: "600" },
-  card: {
-    backgroundColor: "#fff",
-    padding: 8,
-    borderRadius: 6,
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    marginTop: 4,
-  },
-});

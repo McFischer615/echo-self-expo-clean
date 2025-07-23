@@ -1,6 +1,6 @@
-// components/ui/popover.tsx
 import React, { useState, useRef } from "react";
-import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
+import { TouchableOpacity, Text, View } from "react-native";
+import styled from "styled-components/native";
 import Popover from "react-native-popover-view";
 
 interface PopoverProps {
@@ -8,25 +8,32 @@ interface PopoverProps {
   content: string;
 }
 
+const TriggerText = styled.Text`
+  color: #6c4ee3;
+`;
+
+const PopoverContent = styled.View`
+  padding: 10px;
+`;
+
 export const PopoverComponent: React.FC<PopoverProps> = ({ triggerLabel, content }) => {
   const [visible, setVisible] = useState(false);
-  const touchableRef = useRef();
+  const touchableRef = useRef<TouchableOpacity>(null);
 
   return (
     <View>
       <TouchableOpacity ref={touchableRef} onPress={() => setVisible(true)}>
-        <Text style={styles.trigger}>{triggerLabel}</Text>
+        <TriggerText>{triggerLabel}</TriggerText>
       </TouchableOpacity>
-      <Popover isVisible={visible} from={touchableRef} onRequestClose={() => setVisible(false)}>
-        <View style={styles.popover}>
+      <Popover
+        isVisible={visible}
+        from={touchableRef}
+        onRequestClose={() => setVisible(false)}
+      >
+        <PopoverContent>
           <Text>{content}</Text>
-        </View>
+        </PopoverContent>
       </Popover>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  trigger: { color: "#6C4EE3" },
-  popover: { padding: 10 },
-});

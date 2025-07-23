@@ -1,6 +1,5 @@
-// components/ui/command.tsx
 import React, { useState } from "react";
-import { View, FlatList, Text, TouchableOpacity, StyleSheet } from "react-native";
+import styled from "styled-components/native";
 import { Searchbar } from "react-native-paper";
 
 interface CommandProps {
@@ -8,42 +7,35 @@ interface CommandProps {
   onSelect: (item: string) => void;
 }
 
+const Container = styled.View`
+  padding: 10px;
+`;
+
+const StyledSearchbar = styled(Searchbar)`
+  margin-bottom: 10px;
+`;
+
+const Item = styled.TouchableOpacity`
+  padding-vertical: 8px;
+  border-bottom-width: 1px;
+  border-color: #eee;
+`;
+
+const ItemText = styled.Text``;
+
 export const Command: React.FC<CommandProps> = ({ items, onSelect }) => {
   const [query, setQuery] = useState("");
 
   const filtered = items.filter((i) => i.toLowerCase().includes(query.toLowerCase()));
 
   return (
-    <View style={styles.container}>
-      <Searchbar
-        placeholder="Search..."
-        value={query}
-        onChangeText={setQuery}
-        style={styles.search}
-      />
-      <FlatList
-        data={filtered}
-        keyExtractor={(item) => item}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.item} onPress={() => onSelect(item)}>
-            <Text>{item}</Text>
-          </TouchableOpacity>
-        )}
-      />
-    </View>
+    <Container>
+      <StyledSearchbar placeholder="Search..." value={query} onChangeText={setQuery} />
+      {filtered.map((item) => (
+        <Item key={item} onPress={() => onSelect(item)}>
+          <ItemText>{item}</ItemText>
+        </Item>
+      ))}
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-  },
-  search: {
-    marginBottom: 10,
-  },
-  item: {
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderColor: "#eee",
-  },
-});

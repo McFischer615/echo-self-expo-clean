@@ -1,28 +1,50 @@
 // components/ui/table.tsx
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import styled from "styled-components/native";
 
-export const Table: React.FC<{ headers: string[]; rows: string[][] }> = ({ headers, rows }) => (
-  <ScrollView horizontal>
-    <View>
-      <View style={styles.row}>
+const ScrollContainer = styled.ScrollView.attrs(() => ({
+  horizontal: true,
+  showsHorizontalScrollIndicator: false,
+}))``;
+
+const Container = styled.View``;
+
+const Row = styled.View`
+  flex-direction: row;
+`;
+
+const Cell = styled.Text`
+  border-width: 1px;
+  border-color: #ddd;
+  padding: 6px;
+  min-width: 80px;
+`;
+
+const HeaderCell = styled(Cell)`
+  background-color: #f0f0f0;
+  font-weight: 600;
+`;
+
+interface TableProps {
+  headers: string[];
+  rows: string[][];
+}
+
+export const Table: React.FC<TableProps> = ({ headers, rows }) => (
+  <ScrollContainer>
+    <Container>
+      <Row>
         {headers.map((h, i) => (
-          <Text key={i} style={[styles.cell, styles.header]}>{h}</Text>
+          <HeaderCell key={i}>{h}</HeaderCell>
         ))}
-      </View>
+      </Row>
       {rows.map((r, i) => (
-        <View key={i} style={styles.row}>
+        <Row key={i}>
           {r.map((c, j) => (
-            <Text key={j} style={styles.cell}>{c}</Text>
+            <Cell key={j}>{c}</Cell>
           ))}
-        </View>
+        </Row>
       ))}
-    </View>
-  </ScrollView>
+    </Container>
+  </ScrollContainer>
 );
-
-const styles = StyleSheet.create({
-  row: { flexDirection: "row" },
-  cell: { borderWidth: 1, borderColor: "#ddd", padding: 6, minWidth: 80 },
-  header: { backgroundColor: "#f0f0f0", fontWeight: "600" },
-});

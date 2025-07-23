@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView, FlatList, TouchableOpacity } from "react-native";
+import { ActivityIndicator, ScrollView, FlatList } from "react-native";
 import { supabase } from "../services/supabaseClient";
 import { echoselfTheme } from "@/theme/echoself-theme";
 import { Card, Button } from "@/components/ui";
+import styled from "styled-components/native";
 
 interface EchoProfile {
   id: string;
@@ -37,7 +38,10 @@ const EchoManager: React.FC = () => {
 
   const syncProfile = async (id: string) => {
     try {
-      await supabase.from("echo_profiles").update({ last_sync: new Date().toISOString() }).eq("id", id);
+      await supabase
+        .from("echo_profiles")
+        .update({ last_sync: new Date().toISOString() })
+        .eq("id", id);
       fetchProfiles();
     } catch (error) {
       console.error("Error syncing profile:", error);
@@ -46,32 +50,36 @@ const EchoManager: React.FC = () => {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <LoadingContainer>
         <ActivityIndicator size="large" color={echoselfTheme.colors.primary} />
-        <Text style={styles.loadingText}>Loading Echo Profiles...</Text>
-      </View>
+        <LoadingText>Loading Echo Profiles...</LoadingText>
+      </LoadingContainer>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.header}>Echo Manager</Text>
+    <Container>
+      <Header>Echo Manager</Header>
 
       <FlatList
         data={profiles}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Card style={styles.profileCard}>
-            <View style={styles.profileHeader}>
-              <Text style={styles.profileName}>{item.name}</Text>
-              <View
-                style={[
-                  styles.statusDot,
-                  { backgroundColor: item.status === "active" ? echoselfTheme.colors.success : echoselfTheme.colors.error },
-                ]}
+          <Card style={{ marginBottom: echoselfTheme.spacing.md }}>
+            <ProfileHeader>
+              <ProfileName>{item.name}</ProfileName>
+              <StatusDot
+                style={{
+                  backgroundColor:
+                    item.status === "active"
+                      ? echoselfTheme.colors.success
+                      : echoselfTheme.colors.error,
+                }}
               />
-            </View>
-            <Text style={styles.subText}>Last Sync: {new Date(item.last_sync).toLocaleString()}</Text>
+            </ProfileHeader>
+            <SubText>
+              Last Sync: {new Date(item.last_sync).toLocaleString()}
+            </SubText>
             <Button
               title="Sync Now"
               onPress={() => syncProfile(item.id)}
@@ -80,20 +88,59 @@ const EchoManager: React.FC = () => {
           </Card>
         )}
       />
-    </ScrollView>
+    </Container>
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: echoselfTheme.spacing.md, backgroundColor: echoselfTheme.colors.surface },
-  loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
-  loadingText: { marginTop: 10, color: echoselfTheme.colors.primary },
-  header: { fontSize: echoselfTheme.typography.heading.fontSize, fontWeight: "bold", color: echoselfTheme.colors.primary, marginBottom: 12 },
-  profileCard: { marginBottom: echoselfTheme.spacing.md },
-  profileHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  profileName: { fontSize: 16, fontWeight: "600", color: echoselfTheme.colors.text },
-  subText: { fontSize: 12, color: echoselfTheme.colors.textSecondary, marginTop: 4 },
-  statusDot: { width: 10, height: 10, borderRadius: 5 },
-});
-
 export default EchoManager;
+
+//
+// ✅ Styled Components
+//
+const Container = styled(ScrollView)`
+  flex: 1;
+  padding: ${echoselfTheme.spacing.md}px;
+  background-color: ${echoselfTheme.colors.surface};
+`;
+
+const LoadingContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+const LoadingText = styled.Text`
+  margin-top: 10px;
+  color: ${echoselfTheme.colors.primary};
+`;
+
+const Header = styled.Text`
+  font-size: ${echoselfTheme.typography.heading.fontSize}px;
+  font-weight: bold;
+  color: ${echoselfTheme.colors.primary};
+  margin-bottom: 12px;
+`;
+
+const ProfileHeader = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const ProfileName = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
+  color: ${echoselfTheme.colors.text};
+`;
+
+const SubText = styled.Text`
+  font-size: 12px;
+  color: ${echoselfTheme.colors.textSecondary};
+  margin-top: 4px;
+`;
+
+const StatusDot = styled.View`
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+`;

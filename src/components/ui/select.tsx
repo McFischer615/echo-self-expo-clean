@@ -1,4 +1,3 @@
-// components/ui/select.tsx
 import React, { useState } from "react";
 import { Menu, Button } from "react-native-paper";
 
@@ -18,7 +17,14 @@ export const Select: React.FC<SelectProps> = ({ options, selected, onSelect }) =
       anchor={<Button onPress={() => setVisible(true)}>{selected || "Select"}</Button>}
     >
       {options.map((opt, i) => (
-        <Menu.Item key={i} onPress={() => { onSelect(opt.value); setVisible(false); }} title={opt.label} />
+        <Menu.Item
+          key={i}
+          onPress={() => {
+            onSelect(opt.value);
+            setVisible(false);
+          }}
+          title={opt.label}
+        />
       ))}
     </Menu>
   );

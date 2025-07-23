@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
+import { FlatList, ActivityIndicator, TouchableOpacity } from "react-native";
 import { supabase } from "../services/supabaseClient";
 import { echoselfTheme } from "@/theme/echoself-theme";
 import { Card } from "@/components/ui";
 import { Ionicons } from "@expo/vector-icons";
+import styled from "styled-components/native";
 
 interface DashboardMetric {
   id: string;
@@ -38,76 +39,103 @@ const DashboardScreen: React.FC = () => {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <LoadingContainer>
         <ActivityIndicator size="large" color={echoselfTheme.colors.primary} />
-        <Text style={styles.loadingText}>Loading Dashboard...</Text>
-      </View>
+        <LoadingText>Loading Dashboard...</LoadingText>
+      </LoadingContainer>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Dashboard</Text>
+    <Container>
+      <Header>Dashboard</Header>
       <FlatList
         data={metrics}
         keyExtractor={(item) => item.id}
         numColumns={2}
-        columnWrapperStyle={styles.row}
+        columnWrapperStyle={{ justifyContent: "space-between" }}
         renderItem={({ item }) => (
-          <Card style={styles.metricCard}>
-            <View style={styles.metricContent}>
+          <Card style={{ width: "48%", padding: echoselfTheme.spacing.sm, marginBottom: echoselfTheme.spacing.sm }}>
+            <MetricContent>
               <Ionicons name={item.icon as any} size={28} color={echoselfTheme.colors.primary} />
-              <Text style={styles.metricTitle}>{item.title}</Text>
-              <Text style={styles.metricValue}>{item.value}</Text>
-            </View>
+              <MetricTitle>{item.title}</MetricTitle>
+              <MetricValue>{item.value}</MetricValue>
+            </MetricContent>
           </Card>
         )}
       />
 
-      <View style={styles.navSection}>
-        <TouchableOpacity style={styles.navButton}>
+      <NavSection>
+        <NavButton activeOpacity={0.7}>
           <Ionicons name="chatbubbles-outline" size={20} color={echoselfTheme.colors.primary} />
-          <Text style={styles.navText}>Chat with Echo</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
+          <NavText>Chat with Echo</NavText>
+        </NavButton>
+        <NavButton activeOpacity={0.7}>
           <Ionicons name="create-outline" size={20} color={echoselfTheme.colors.primary} />
-          <Text style={styles.navText}>Create Echo</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          <NavText>Create Echo</NavText>
+        </NavButton>
+      </NavSection>
+    </Container>
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: echoselfTheme.colors.surface, padding: echoselfTheme.spacing.md },
-  loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
-  loadingText: { marginTop: 8, color: echoselfTheme.colors.textSecondary },
-  header: {
-    fontSize: echoselfTheme.typography.heading.fontSize,
-    fontWeight: "bold",
-    color: echoselfTheme.colors.primary,
-    marginBottom: echoselfTheme.spacing.md,
-  },
-  row: { justifyContent: "space-between" },
-  metricCard: {
-    width: "48%",
-    padding: echoselfTheme.spacing.sm,
-    marginBottom: echoselfTheme.spacing.sm,
-  },
-  metricContent: { alignItems: "center" },
-  metricTitle: { fontSize: 12, color: echoselfTheme.colors.textSecondary, marginTop: 4 },
-  metricValue: { fontSize: 16, fontWeight: "600", color: echoselfTheme.colors.text },
-  navSection: { marginTop: echoselfTheme.spacing.lg },
-  navButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: echoselfTheme.spacing.sm,
-  },
-  navText: {
-    fontSize: 14,
-    color: echoselfTheme.colors.text,
-    marginLeft: echoselfTheme.spacing.xs,
-  },
-});
-
 export default DashboardScreen;
+
+//
+// ✅ Styled Components
+//
+const Container = styled.View`
+  flex: 1;
+  background-color: ${echoselfTheme.colors.surface};
+  padding: ${echoselfTheme.spacing.md}px;
+`;
+
+const LoadingContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+const LoadingText = styled.Text`
+  margin-top: 8px;
+  color: ${echoselfTheme.colors.textSecondary};
+`;
+
+const Header = styled.Text`
+  font-size: ${echoselfTheme.typography.heading.fontSize}px;
+  font-weight: bold;
+  color: ${echoselfTheme.colors.primary};
+  margin-bottom: ${echoselfTheme.spacing.md}px;
+`;
+
+const MetricContent = styled.View`
+  align-items: center;
+`;
+
+const MetricTitle = styled.Text`
+  font-size: 12px;
+  color: ${echoselfTheme.colors.textSecondary};
+  margin-top: 4px;
+`;
+
+const MetricValue = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
+  color: ${echoselfTheme.colors.text};
+`;
+
+const NavSection = styled.View`
+  margin-top: ${echoselfTheme.spacing.lg}px;
+`;
+
+const NavButton = styled(TouchableOpacity)`
+  flex-direction: row;
+  align-items: center;
+  padding-vertical: ${echoselfTheme.spacing.sm}px;
+`;
+
+const NavText = styled.Text`
+  font-size: 14px;
+  color: ${echoselfTheme.colors.text};
+  margin-left: ${echoselfTheme.spacing.xs}px;
+`;

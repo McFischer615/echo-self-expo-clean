@@ -1,6 +1,7 @@
 // components/ui/loading-spinner.tsx
 import React from "react";
-import { ActivityIndicator, View, StyleSheet } from "react-native";
+import { ActivityIndicator } from "react-native";
+import styled from "styled-components/native";
 
 interface LoadingSpinnerProps {
   size?: "sm" | "md" | "lg";
@@ -12,13 +13,15 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   color = "#6C4EE3",
 }) => {
   const mapSize = size === "sm" ? 20 : size === "lg" ? 40 : 30;
+
   return (
-    <View style={styles.container}>
+    <SpinnerContainer>
       <ActivityIndicator size={mapSize} color={color} />
-    </View>
+    </SpinnerContainer>
   );
 };
 
-const styles = StyleSheet.create({
-  container: { justifyContent: "center", alignItems: "center" },
-});
+const SpinnerContainer = styled.View`
+  justify-content: center;
+  align-items: center;
+`;

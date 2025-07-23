@@ -1,19 +1,11 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  ActivityIndicator,
-} from "react-native";
+import { ActivityIndicator, Dimensions, TextInput } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useEnhancedDecisionPatterns } from "../hooks/useEnhancedDecisionPatterns";
 import { LineChart } from "react-native-chart-kit";
-import { Dimensions } from "react-native";
 import { echoselfTheme } from "@/theme/echoself-theme";
 import { Card, Button } from "@/components/ui";
+import styled from "styled-components/native";
 
 const EnhancedDecisionPatternsDashboard: React.FC = () => {
   const [analytics, setAnalytics] = useState<any>(null);
@@ -61,50 +53,46 @@ const EnhancedDecisionPatternsDashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <LoadingContainer>
         <ActivityIndicator size="large" color={echoselfTheme.colors.primary} />
-        <Text style={styles.loadingText}>Loading decision patterns...</Text>
-      </View>
+        <LoadingText>Loading decision patterns...</LoadingText>
+      </LoadingContainer>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.headerRow}>
-        <Text style={styles.headerTitle}>Enhanced Decision Patterns</Text>
+    <Container>
+      <HeaderRow>
+        <HeaderTitle>Enhanced Decision Patterns</HeaderTitle>
         <Button title="Refresh" onPress={loadAnalytics} style={{ width: 100 }} />
-      </View>
+      </HeaderRow>
 
       {/* Metrics */}
-      <View style={styles.metricsRow}>
-        <Card style={styles.metricCard}>
-          <Text style={styles.metricLabel}>Success Rate</Text>
-          <Text style={styles.metricValue}>
-            {((analytics?.successRate || 0) * 100).toFixed(1)}%
-          </Text>
+      <MetricsRow>
+        <Card style={{ width: "30%", alignItems: "center", padding: echoselfTheme.spacing.sm }}>
+          <MetricLabel>Success Rate</MetricLabel>
+          <MetricValue>{((analytics?.successRate || 0) * 100).toFixed(1)}%</MetricValue>
         </Card>
-        <Card style={styles.metricCard}>
-          <Text style={styles.metricLabel}>Total Decisions</Text>
-          <Text style={styles.metricValue}>{analytics?.totalDecisions || 0}</Text>
+        <Card style={{ width: "30%", alignItems: "center", padding: echoselfTheme.spacing.sm }}>
+          <MetricLabel>Total Decisions</MetricLabel>
+          <MetricValue>{analytics?.totalDecisions || 0}</MetricValue>
         </Card>
-        <Card style={styles.metricCard}>
-          <Text style={styles.metricLabel}>This Week</Text>
-          <Text style={styles.metricValue}>{analytics?.decisionVelocity || 0}</Text>
+        <Card style={{ width: "30%", alignItems: "center", padding: echoselfTheme.spacing.sm }}>
+          <MetricLabel>This Week</MetricLabel>
+          <MetricValue>{analytics?.decisionVelocity || 0}</MetricValue>
         </Card>
-      </View>
+      </MetricsRow>
 
       {/* Predictor */}
-      <Card style={styles.predictorCard}>
-        <Text style={styles.cardTitle}>Decision Outcome Predictor</Text>
-        <TextInput
-          style={styles.input}
+      <Card style={{ marginBottom: echoselfTheme.spacing.md }}>
+        <CardTitle>Decision Outcome Predictor</CardTitle>
+        <StyledInput
           placeholder="Decision Context..."
           value={testContext}
           onChangeText={setTestContext}
           multiline
         />
-        <TextInput
-          style={styles.input}
+        <StyledInput
           placeholder="Proposed Choice..."
           value={testChoice}
           onChangeText={setTestChoice}
@@ -116,25 +104,30 @@ const EnhancedDecisionPatternsDashboard: React.FC = () => {
           style={{ marginTop: echoselfTheme.spacing.sm }}
         />
         {prediction && (
-          <View style={styles.predictionBox}>
-            <Text style={[styles.predictedOutcome, { color: getOutcomeColor(prediction.predictedOutcome) }]}>
+          <PredictionBox>
+            <PredictedOutcome color={getOutcomeColor(prediction.predictedOutcome)}>
               {prediction.predictedOutcome}
-            </Text>
-            <Text style={styles.predictionReason}>{prediction.reasoning}</Text>
-          </View>
+            </PredictedOutcome>
+            <PredictionReason>{prediction.reasoning}</PredictionReason>
+          </PredictionBox>
         )}
       </Card>
 
       {/* Trends */}
       {analytics?.recentTrends?.length > 0 && (
-        <Card style={styles.chartCard}>
-          <Text style={styles.cardTitle}>Decision Success Trends</Text>
+        <Card style={{ marginBottom: echoselfTheme.spacing.md }}>
+          <CardTitle>Decision Success Trends</CardTitle>
           <LineChart
             data={{
               labels: analytics.recentTrends.map((t: any) =>
-                new Date(t.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+                new Date(t.date).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                })
               ),
-              datasets: [{ data: analytics.recentTrends.map((t: any) => t.successRate * 100) }],
+              datasets: [
+                { data: analytics.recentTrends.map((t: any) => t.successRate * 100) },
+              ],
             }}
             width={Dimensions.get("window").width - 40}
             height={220}
@@ -149,42 +142,96 @@ const EnhancedDecisionPatternsDashboard: React.FC = () => {
           />
         </Card>
       )}
-    </ScrollView>
+    </Container>
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: echoselfTheme.colors.surface, padding: echoselfTheme.spacing.md },
-  loadingContainer: { flex: 1, alignItems: "center", justifyContent: "center" },
-  loadingText: { color: echoselfTheme.colors.textSecondary, marginTop: 8 },
-  headerRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: echoselfTheme.spacing.md },
-  headerTitle: { fontSize: echoselfTheme.typography.heading.fontSize, fontWeight: "bold", color: echoselfTheme.colors.primary },
-  metricsRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: echoselfTheme.spacing.md },
-  metricCard: { width: "30%", alignItems: "center", padding: echoselfTheme.spacing.sm },
-  metricLabel: { fontSize: 12, color: echoselfTheme.colors.textSecondary },
-  metricValue: { fontSize: 16, fontWeight: "bold", color: echoselfTheme.colors.text },
-  predictorCard: { marginBottom: echoselfTheme.spacing.md },
-  cardTitle: { fontSize: 16, fontWeight: "600", marginBottom: 6, color: echoselfTheme.colors.text },
-  input: {
-    borderWidth: 1,
-    borderColor: echoselfTheme.colors.border,
-    borderRadius: echoselfTheme.radius.sm,
-    padding: 8,
-    marginBottom: 6,
-    backgroundColor: echoselfTheme.colors.background,
-    color: echoselfTheme.colors.text,
-  },
-  predictionBox: {
-    backgroundColor: echoselfTheme.colors.background,
-    padding: 8,
-    borderRadius: echoselfTheme.radius.sm,
-    marginTop: 6,
-    borderWidth: 1,
-    borderColor: echoselfTheme.colors.border,
-  },
-  predictedOutcome: { fontWeight: "600", fontSize: 14 },
-  predictionReason: { fontSize: 12, color: echoselfTheme.colors.textSecondary, marginTop: 4 },
-  chartCard: { marginBottom: echoselfTheme.spacing.md },
-});
-
 export default EnhancedDecisionPatternsDashboard;
+
+//
+// ✅ Styled Components
+//
+const Container = styled.ScrollView`
+  flex: 1;
+  background-color: ${echoselfTheme.colors.surface};
+  padding: ${echoselfTheme.spacing.md}px;
+`;
+
+const LoadingContainer = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+`;
+
+const LoadingText = styled.Text`
+  color: ${echoselfTheme.colors.textSecondary};
+  margin-top: 8px;
+`;
+
+const HeaderRow = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${echoselfTheme.spacing.md}px;
+`;
+
+const HeaderTitle = styled.Text`
+  font-size: ${echoselfTheme.typography.heading.fontSize}px;
+  font-weight: bold;
+  color: ${echoselfTheme.colors.primary};
+`;
+
+const MetricsRow = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: ${echoselfTheme.spacing.md}px;
+`;
+
+const MetricLabel = styled.Text`
+  font-size: 12px;
+  color: ${echoselfTheme.colors.textSecondary};
+`;
+
+const MetricValue = styled.Text`
+  font-size: 16px;
+  font-weight: bold;
+  color: ${echoselfTheme.colors.text};
+`;
+
+const CardTitle = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: ${echoselfTheme.colors.text};
+`;
+
+const StyledInput = styled(TextInput)`
+  border-width: 1px;
+  border-color: ${echoselfTheme.colors.border};
+  border-radius: ${echoselfTheme.radius.sm}px;
+  padding: 8px;
+  margin-bottom: 6px;
+  background-color: ${echoselfTheme.colors.background};
+  color: ${echoselfTheme.colors.text};
+`;
+
+const PredictionBox = styled.View`
+  background-color: ${echoselfTheme.colors.background};
+  padding: 8px;
+  border-radius: ${echoselfTheme.radius.sm}px;
+  margin-top: 6px;
+  border-width: 1px;
+  border-color: ${echoselfTheme.colors.border};
+`;
+
+const PredictedOutcome = styled.Text<{ color: string }>`
+  font-weight: 600;
+  font-size: 14px;
+  color: ${(props) => props.color};
+`;
+
+const PredictionReason = styled.Text`
+  font-size: 12px;
+  color: ${echoselfTheme.colors.textSecondary};
+  margin-top: 4px;
+`;

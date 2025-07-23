@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView, FlatList } from "react-native";
+import { ActivityIndicator, ScrollView, FlatList } from "react-native";
 import { supabase } from "../services/supabaseClient";
 import { BarChart, PieChart } from "react-native-svg-charts";
 import { echoselfTheme } from "@/theme/echoself-theme";
 import { Card } from "@/components/ui";
+import styled from "styled-components/native";
 
 interface UsageAnalytics {
   provider_name: string;
@@ -47,82 +48,145 @@ const AIAnalyticsDashboard: React.FC = () => {
   const pieData = analytics.map((item, index) => ({
     key: index,
     value: item.total_requests,
-    svg: { fill: [echoselfTheme.colors.primary, "#06B6D4", "#10B981", "#F59E0B", "#EF4444"][index % 5] },
+    svg: {
+      fill: [
+        echoselfTheme.colors.primary,
+        "#06B6D4",
+        "#10B981",
+        "#F59E0B",
+        "#EF4444",
+      ][index % 5],
+    },
   }));
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <LoadingContainer>
         <ActivityIndicator size="large" color={echoselfTheme.colors.primary} />
-        <Text style={styles.loadingText}>Loading Analytics...</Text>
-      </View>
+        <LoadingText>Loading Analytics...</LoadingText>
+      </LoadingContainer>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.header}>AI Analytics Dashboard</Text>
+    <Container>
+      <Header>AI Analytics Dashboard</Header>
 
-      {/* Summary */}
-      <View style={styles.summaryRow}>
-        <Card style={styles.summaryCard}>
-          <Text style={styles.cardTitle}>Total Requests</Text>
-          <Text style={styles.cardValue}>{totalRequests}</Text>
+      {/* ✅ Summary */}
+      <SummaryRow>
+        <Card style={{ width: "30%", alignItems: "center" }}>
+          <CardTitle>Total Requests</CardTitle>
+          <CardValue>{totalRequests}</CardValue>
         </Card>
-        <Card style={styles.summaryCard}>
-          <Text style={styles.cardTitle}>Total Tokens</Text>
-          <Text style={styles.cardValue}>{totalTokens}</Text>
+        <Card style={{ width: "30%", alignItems: "center" }}>
+          <CardTitle>Total Tokens</CardTitle>
+          <CardValue>{totalTokens}</CardValue>
         </Card>
-        <Card style={styles.summaryCard}>
-          <Text style={styles.cardTitle}>Total Cost</Text>
-          <Text style={styles.cardValue}>${totalCost}</Text>
+        <Card style={{ width: "30%", alignItems: "center" }}>
+          <CardTitle>Total Cost</CardTitle>
+          <CardValue>${totalCost}</CardValue>
         </Card>
-      </View>
+      </SummaryRow>
 
-      {/* Bar Chart */}
-      <Card style={styles.chartCard}>
-        <Text style={styles.chartTitle}>Requests by Model</Text>
-        <BarChart style={{ height: 200 }} data={barData} svg={{ fill: echoselfTheme.colors.primary }} contentInset={{ top: 20, bottom: 20 }} />
+      {/* ✅ Bar Chart */}
+      <Card style={{ marginBottom: echoselfTheme.spacing.md }}>
+        <ChartTitle>Requests by Model</ChartTitle>
+        <BarChart
+          style={{ height: 200 }}
+          data={barData}
+          svg={{ fill: echoselfTheme.colors.primary }}
+          contentInset={{ top: 20, bottom: 20 }}
+        />
       </Card>
 
-      {/* Pie Chart */}
-      <Card style={styles.chartCard}>
-        <Text style={styles.chartTitle}>Request Distribution</Text>
+      {/* ✅ Pie Chart */}
+      <Card style={{ marginBottom: echoselfTheme.spacing.md }}>
+        <ChartTitle>Request Distribution</ChartTitle>
         <PieChart style={{ height: 200 }} data={pieData} />
       </Card>
 
-      {/* Detailed List */}
-      <Text style={styles.chartTitle}>Detailed Analytics</Text>
+      {/* ✅ Detailed List */}
+      <ChartTitle>Detailed Analytics</ChartTitle>
       <FlatList
         data={analytics}
         keyExtractor={(_, i) => i.toString()}
         renderItem={({ item }) => (
-          <Card style={styles.listRow}>
-            <Text style={styles.listText}>{item.provider_name} - {item.model_name}</Text>
-            <Text style={styles.listSubText}>
-              {item.total_requests} req | {item.avg_response_time}ms | {item.success_rate}% success | ${item.total_cost.toFixed(4)}
-            </Text>
+          <Card style={{ marginBottom: echoselfTheme.spacing.sm }}>
+            <ListText>
+              {item.provider_name} - {item.model_name}
+            </ListText>
+            <ListSubText>
+              {item.total_requests} req | {item.avg_response_time}ms |{" "}
+              {item.success_rate}% success | ${item.total_cost.toFixed(4)}
+            </ListSubText>
           </Card>
         )}
       />
-    </ScrollView>
+    </Container>
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: echoselfTheme.spacing.md, backgroundColor: echoselfTheme.colors.surface },
-  loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
-  loadingText: { marginTop: 10, color: echoselfTheme.colors.primary },
-  header: { fontSize: echoselfTheme.typography.heading.fontSize, fontWeight: "bold", color: echoselfTheme.colors.primary, marginBottom: 12 },
-  summaryRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: echoselfTheme.spacing.md },
-  summaryCard: { width: "30%", alignItems: "center" },
-  cardTitle: { fontSize: 12, color: echoselfTheme.colors.textSecondary },
-  cardValue: { fontSize: 16, fontWeight: "bold", color: echoselfTheme.colors.text },
-  chartCard: { marginBottom: echoselfTheme.spacing.md },
-  chartTitle: { fontSize: 16, fontWeight: "600", marginBottom: 8, color: echoselfTheme.colors.text },
-  listRow: { marginBottom: echoselfTheme.spacing.sm },
-  listText: { fontSize: 14, fontWeight: "600", color: echoselfTheme.colors.text },
-  listSubText: { fontSize: 12, color: echoselfTheme.colors.textSecondary, marginTop: 2 },
-});
-
 export default AIAnalyticsDashboard;
+
+//
+// ✅ Styled Components
+//
+const Container = styled(ScrollView)`
+  flex: 1;
+  padding: ${echoselfTheme.spacing.md}px;
+  background-color: ${echoselfTheme.colors.surface};
+`;
+
+const LoadingContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+const LoadingText = styled.Text`
+  margin-top: 10px;
+  color: ${echoselfTheme.colors.primary};
+`;
+
+const Header = styled.Text`
+  font-size: ${echoselfTheme.typography.heading.fontSize}px;
+  font-weight: bold;
+  color: ${echoselfTheme.colors.primary};
+  margin-bottom: 12px;
+`;
+
+const SummaryRow = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: ${echoselfTheme.spacing.md}px;
+`;
+
+const CardTitle = styled.Text`
+  font-size: 12px;
+  color: ${echoselfTheme.colors.textSecondary};
+`;
+
+const CardValue = styled.Text`
+  font-size: 16px;
+  font-weight: bold;
+  color: ${echoselfTheme.colors.text};
+`;
+
+const ChartTitle = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: ${echoselfTheme.colors.text};
+`;
+
+const ListText = styled.Text`
+  font-size: 14px;
+  font-weight: 600;
+  color: ${echoselfTheme.colors.text};
+`;
+
+const ListSubText = styled.Text`
+  font-size: 12px;
+  color: ${echoselfTheme.colors.textSecondary};
+  margin-top: 2px;
+`;

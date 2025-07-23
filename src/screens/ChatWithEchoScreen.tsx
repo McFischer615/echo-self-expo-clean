@@ -1,18 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  FlatList,
   KeyboardAvoidingView,
-  TouchableOpacity,
   Platform,
+  FlatList,
+  TextInput as RNTextInput,
+  TouchableOpacity,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { echoselfTheme } from "@/theme/echoself-theme";
 import { Card } from "@/components/ui";
 import { supabase } from "../services/supabaseClient";
+import styled from "styled-components/native";
 
 interface ChatMessage {
   id: string;
@@ -96,118 +94,101 @@ const ChatWithEchoScreen: React.FC = () => {
   };
 
   const renderItem = ({ item }: { item: ChatMessage }) => (
-    <View
-      style={[
-        styles.messageContainer,
-        item.sender === "user" ? styles.userMessage : styles.echoMessage,
-      ]}
-    >
-      <Card style={styles.messageCard}>
-        <Text
-          style={[
-            styles.messageText,
-            item.sender === "user" ? styles.userText : styles.echoText,
-          ]}
-        >
-          {item.content}
-        </Text>
+    <MessageContainer sender={item.sender}>
+      <Card style={{ padding: echoselfTheme.spacing.sm }}>
+        <MessageText sender={item.sender}>{item.content}</MessageText>
       </Card>
-    </View>
+    </MessageContainer>
   );
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={styles.chatContainer}
-        onContentSizeChange={() =>
-          flatListRef.current?.scrollToEnd({ animated: true })
-        }
-      />
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Type your message..."
-          placeholderTextColor={echoselfTheme.colors.textSecondary}
-          value={input}
-          onChangeText={setInput}
-          onSubmitEditing={sendMessage}
-          editable={!loading}
+      <Container>
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          contentContainerStyle={{ paddingBottom: echoselfTheme.spacing.md }}
+          onContentSizeChange={() =>
+            flatListRef.current?.scrollToEnd({ animated: true })
+          }
         />
-        <TouchableOpacity
-          style={styles.sendButton}
-          onPress={sendMessage}
-          disabled={loading}
-        >
-          <Ionicons
-            name="send"
-            size={22}
-            color={loading ? echoselfTheme.colors.muted : echoselfTheme.colors.primary}
+
+        <InputRow>
+          <StyledInput
+            placeholder="Type your message..."
+            placeholderTextColor={echoselfTheme.colors.textSecondary}
+            value={input}
+            onChangeText={setInput}
+            onSubmitEditing={sendMessage}
+            editable={!loading}
           />
-        </TouchableOpacity>
-      </View>
+          <SendButton onPress={sendMessage} disabled={loading}>
+            <Ionicons
+              name="send"
+              size={22}
+              color={
+                loading
+                  ? echoselfTheme.colors.muted
+                  : echoselfTheme.colors.primary
+              }
+            />
+          </SendButton>
+        </InputRow>
+      </Container>
     </KeyboardAvoidingView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: echoselfTheme.colors.surface,
-    padding: echoselfTheme.spacing.md,
-  },
-  chatContainer: {
-    paddingBottom: echoselfTheme.spacing.md,
-  },
-  messageContainer: {
-    marginBottom: echoselfTheme.spacing.sm,
-    maxWidth: "80%",
-  },
-  userMessage: {
-    alignSelf: "flex-end",
-  },
-  echoMessage: {
-    alignSelf: "flex-start",
-  },
-  messageCard: {
-    padding: echoselfTheme.spacing.sm,
-  },
-  messageText: {
-    fontSize: 14,
-  },
-  userText: {
-    color: echoselfTheme.colors.text,
-  },
-  echoText: {
-    color: echoselfTheme.colors.textSecondary,
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderTopWidth: 1,
-    borderColor: echoselfTheme.colors.muted,
-    paddingVertical: echoselfTheme.spacing.xs,
-  },
-  input: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: echoselfTheme.colors.muted,
-    borderRadius: echoselfTheme.radius.sm,
-    padding: echoselfTheme.spacing.sm,
-    backgroundColor: echoselfTheme.colors.background,
-    color: echoselfTheme.colors.text,
-    marginRight: echoselfTheme.spacing.xs,
-  },
-  sendButton: {
-    padding: echoselfTheme.spacing.xs,
-  },
-});
-
 export default ChatWithEchoScreen;
+
+//
+// ✅ Styled Components
+//
+const Container = styled.View`
+  flex: 1;
+  background-color: ${echoselfTheme.colors.surface};
+  padding: ${echoselfTheme.spacing.md}px;
+`;
+
+const MessageContainer = styled.View<{ sender: "user" | "echo" }>`
+  margin-bottom: ${echoselfTheme.spacing.sm}px;
+  max-width: 80%;
+  align-self: ${(props) =>
+    props.sender === "user" ? "flex-end" : "flex-start"};
+`;
+
+const MessageText = styled.Text<{ sender: "user" | "echo" }>`
+  font-size: 14px;
+  color: ${(props) =>
+    props.sender === "user"
+      ? echoselfTheme.colors.text
+      : echoselfTheme.colors.textSecondary};
+`;
+
+const InputRow = styled.View`
+  flex-direction: row;
+  align-items: center;
+  border-top-width: 1px;
+  border-color: ${echoselfTheme.colors.muted};
+  padding-vertical: ${echoselfTheme.spacing.xs}px;
+`;
+
+const StyledInput = styled(RNTextInput)`
+  flex: 1;
+  border-width: 1px;
+  border-color: ${echoselfTheme.colors.muted};
+  border-radius: ${echoselfTheme.radius.sm}px;
+  padding: ${echoselfTheme.spacing.sm}px;
+  background-color: ${echoselfTheme.colors.background};
+  color: ${echoselfTheme.colors.text};
+  margin-right: ${echoselfTheme.spacing.xs}px;
+`;
+
+const SendButton = styled(TouchableOpacity)`
+  padding: ${echoselfTheme.spacing.xs}px;
+`;

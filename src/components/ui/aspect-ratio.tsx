@@ -1,28 +1,23 @@
 // components/ui/aspect-ratio.tsx
 import React from "react";
-import { View, StyleSheet, ViewStyle } from "react-native";
+import styled from "styled-components/native";
 
 interface AspectRatioProps {
   ratio?: number; // e.g., 16/9
-  style?: ViewStyle;
+  style?: any;
   children: React.ReactNode;
 }
 
 export const AspectRatio: React.FC<AspectRatioProps> = ({
-  ratio = 1, // default 1:1 (square)
+  ratio = 1,
   style,
   children,
 }) => {
-  return (
-    <View style={[styles.container, { aspectRatio: ratio }, style]}>
-      {children}
-    </View>
-  );
+  return <Container ratio={ratio} style={style}>{children}</Container>;
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    overflow: "hidden",
-  },
-});
+const Container = styled.View<{ ratio: number }>`
+  width: 100%;
+  overflow: hidden;
+  aspect-ratio: ${({ ratio }) => ratio};
+`;

@@ -1,26 +1,32 @@
 // components/ui/sidebar.tsx
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import styled from "styled-components/native";
+
+const Container = styled.View<{ width: number }>`
+  background-color: #f7f7f7;
+  padding-vertical: 10px;
+  height: 100%;
+  width: ${({ width }) => width}px;
+`;
+
+const Item = styled.View`
+  padding: 10px;
+  border-bottom-width: 1px;
+  border-color: #ddd;
+`;
+
+const Label = styled.Text`
+  font-size: 14px;
+  color: #333;
+`;
 
 export const Sidebar: React.FC<{ children: React.ReactNode; width?: number }> = ({
   children,
   width = 240,
-}) => (
-  <View style={[styles.container, { width }]}>{children}</View>
-);
+}) => <Container width={width}>{children}</Container>;
 
 export const SidebarItem: React.FC<{ label: string }> = ({ label }) => (
-  <View style={styles.item}>
-    <Text style={styles.label}>{label}</Text>
-  </View>
+  <Item>
+    <Label>{label}</Label>
+  </Item>
 );
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#f7f7f7",
-    paddingVertical: 10,
-    height: "100%",
-  },
-  item: { padding: 10, borderBottomWidth: 1, borderColor: "#ddd" },
-  label: { fontSize: 14, color: "#333" },
-});

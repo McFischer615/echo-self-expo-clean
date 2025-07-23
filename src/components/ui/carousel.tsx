@@ -1,6 +1,6 @@
-// components/ui/carousel.tsx
 import React, { useRef } from "react";
-import { View, Dimensions, StyleSheet, TouchableOpacity } from "react-native";
+import styled from "styled-components/native";
+import { Dimensions, TouchableOpacity } from "react-native";
 import Carousel from "react-native-snap-carousel";
 import { ArrowLeft, ArrowRight } from "lucide-react-native";
 
@@ -10,6 +10,23 @@ interface CarouselProps {
   itemWidth?: number;
 }
 
+const Container = styled.View`
+  align-items: center;
+`;
+
+const Buttons = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 10px;
+  width: 100px;
+`;
+
+const NavButton = styled.TouchableOpacity`
+  padding: 8px;
+  background-color: #f1f1f1;
+  border-radius: 20px;
+`;
+
 export const CarouselComponent: React.FC<CarouselProps> = ({
   data,
   renderItem,
@@ -18,7 +35,7 @@ export const CarouselComponent: React.FC<CarouselProps> = ({
   const carouselRef = useRef<Carousel<any>>(null);
 
   return (
-    <View style={styles.container}>
+    <Container>
       <Carousel
         ref={carouselRef}
         data={data}
@@ -28,37 +45,14 @@ export const CarouselComponent: React.FC<CarouselProps> = ({
         inactiveSlideOpacity={0.7}
         inactiveSlideScale={0.9}
       />
-      <View style={styles.buttons}>
-        <TouchableOpacity
-          onPress={() => carouselRef.current?.snapToPrev()}
-          style={styles.navButton}
-        >
+      <Buttons>
+        <NavButton onPress={() => carouselRef.current?.snapToPrev()}>
           <ArrowLeft size={18} color="#6C4EE3" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => carouselRef.current?.snapToNext()}
-          style={styles.navButton}
-        >
+        </NavButton>
+        <NavButton onPress={() => carouselRef.current?.snapToNext()}>
           <ArrowRight size={18} color="#6C4EE3" />
-        </TouchableOpacity>
-      </View>
-    </View>
+        </NavButton>
+      </Buttons>
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-  },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 10,
-    width: 100,
-  },
-  navButton: {
-    padding: 8,
-    backgroundColor: "#f1f1f1",
-    borderRadius: 20,
-  },
-});

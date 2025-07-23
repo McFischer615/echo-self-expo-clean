@@ -1,5 +1,6 @@
 // components/ui/checkbox.tsx
 import React, { useState } from "react";
+import styled from "styled-components/native";
 import { Checkbox as PaperCheckbox } from "react-native-paper";
 
 interface CheckboxProps {
@@ -16,5 +17,13 @@ export const Checkbox: React.FC<CheckboxProps> = ({ checked = false, onToggle })
     onToggle?.(newValue);
   };
 
-  return <PaperCheckbox status={value ? "checked" : "unchecked"} onPress={toggle} />;
+  return (
+    <Wrapper>
+      <PaperCheckbox status={value ? "checked" : "unchecked"} onPress={toggle} />
+    </Wrapper>
+  );
 };
+
+const Wrapper = styled.View`
+  padding: 4px;
+`;

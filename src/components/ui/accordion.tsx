@@ -1,7 +1,7 @@
-// components/ui/accordion.tsx
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Animated } from "react-native";
+import React, { useState, useRef, useEffect } from "react";
+import { Animated, TouchableOpacity, View } from "react-native";
 import Collapsible from "react-native-collapsible";
+import styled from "styled-components/native";
 import { ChevronDown } from "lucide-react-native";
 
 interface AccordionItemProps {
@@ -9,18 +9,42 @@ interface AccordionItemProps {
   children: React.ReactNode;
 }
 
+const Container = styled.View`
+  border-bottom-width: 1px;
+  border-bottom-color: #ddd;
+  margin-bottom: 5px;
+`;
+
+const Header = styled(TouchableOpacity)`
+  flex-direction: row;
+  justify-content: space-between;
+  padding-vertical: 12px;
+  padding-horizontal: 10px;
+`;
+
+const Title = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+`;
+
+const Content = styled.View`
+  padding-horizontal: 10px;
+  padding-vertical: 8px;
+  background-color: #f9f9f9;
+`;
+
 export const AccordionItem: React.FC<AccordionItemProps> = ({ title, children }) => {
   const [expanded, setExpanded] = useState(false);
-  const rotation = new Animated.Value(expanded ? 180 : 0);
+  const rotation = useRef(new Animated.Value(0)).current;
 
-  const toggle = () => {
-    setExpanded(!expanded);
+  useEffect(() => {
     Animated.timing(rotation, {
-      toValue: expanded ? 0 : 180,
+      toValue: expanded ? 180 : 0,
       duration: 200,
       useNativeDriver: true,
     }).start();
-  };
+  }, [expanded, rotation]);
 
   const rotateInterpolate = rotation.interpolate({
     inputRange: [0, 180],
@@ -28,40 +52,16 @@ export const AccordionItem: React.FC<AccordionItemProps> = ({ title, children })
   });
 
   return (
-    <View style={stylesAcc.container}>
-      <TouchableOpacity style={stylesAcc.header} onPress={toggle}>
-        <Text style={stylesAcc.title}>{title}</Text>
+    <Container>
+      <Header onPress={() => setExpanded((prev) => !prev)}>
+        <Title>{title}</Title>
         <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
           <ChevronDown size={20} color="#6C4EE3" />
         </Animated.View>
-      </TouchableOpacity>
+      </Header>
       <Collapsible collapsed={!expanded}>
-        <View style={stylesAcc.content}>{children}</View>
+        <Content>{children}</Content>
       </Collapsible>
-    </View>
+    </Container>
   );
 };
-
-const stylesAcc = StyleSheet.create({
-  container: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-    marginBottom: 5,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#333",
-  },
-  content: {
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    backgroundColor: "#f9f9f9",
-  },
-});

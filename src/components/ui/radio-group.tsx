@@ -1,7 +1,7 @@
 // components/ui/radio-group.tsx
 import React from "react";
+import styled from "styled-components/native";
 import { RadioButton } from "react-native-paper";
-import { View } from "react-native";
 
 interface RadioGroupProps {
   options: { label: string; value: string }[];
@@ -11,10 +11,14 @@ interface RadioGroupProps {
 
 export const RadioGroup: React.FC<RadioGroupProps> = ({ options, value, onValueChange }) => (
   <RadioButton.Group onValueChange={onValueChange} value={value}>
-    <View>
+    <Container>
       {options.map((o, i) => (
         <RadioButton.Item key={i} label={o.label} value={o.value} />
       ))}
-    </View>
+    </Container>
   </RadioButton.Group>
 );
+
+const Container = styled.View`
+  padding: 4px 0;
+`;

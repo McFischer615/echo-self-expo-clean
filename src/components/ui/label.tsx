@@ -1,11 +1,13 @@
-// components/ui/label.tsx
 import React from "react";
-import { Text, StyleSheet, TextProps } from "react-native";
+import styled from "styled-components/native";
+import { TextProps } from "react-native";
 
-export const Label: React.FC<TextProps> = ({ children, style, ...props }) => (
-  <Text style={[styles.label, style]} {...props}>{children}</Text>
+const StyledLabel = styled.Text`
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+`;
+
+export const Label: React.FC<TextProps> = ({ children, ...props }) => (
+  <StyledLabel {...props}>{children}</StyledLabel>
 );
-
-const styles = StyleSheet.create({
-  label: { fontSize: 14, fontWeight: "600", marginBottom: 4 },
-});

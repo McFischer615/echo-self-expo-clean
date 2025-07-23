@@ -1,6 +1,5 @@
-// components/ui/breadcrumb.tsx
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import styled from "styled-components/native";
 import { ChevronRight, MoreHorizontal } from "lucide-react-native";
 
 interface BreadcrumbItemProps {
@@ -15,43 +14,43 @@ interface BreadcrumbProps {
 
 export const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
   return (
-    <View style={styles.container}>
+    <Container>
       {items.map((item, index) => (
-        <View key={index} style={styles.itemContainer}>
+        <ItemContainer key={index}>
           {index > 0 && <ChevronRight size={14} color="#999" style={{ marginHorizontal: 4 }} />}
           {item.onPress && !item.isCurrent ? (
-            <TouchableOpacity onPress={item.onPress}>
-              <Text style={styles.link}>{item.label}</Text>
-            </TouchableOpacity>
+            <LinkButton onPress={item.onPress}>
+              <LinkText>{item.label}</LinkText>
+            </LinkButton>
           ) : (
-            <Text style={[styles.text, item.isCurrent && styles.current]}>{item.label}</Text>
+            <Text isCurrent={item.isCurrent}>{item.label}</Text>
           )}
-        </View>
+        </ItemContainer>
       ))}
       {items.length > 4 && <MoreHorizontal size={16} color="#999" />}
-    </View>
+    </Container>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    flexWrap: "wrap",
-  },
-  itemContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  link: {
-    color: "#6C4EE3",
-    fontWeight: "600",
-  },
-  text: {
-    color: "#666",
-  },
-  current: {
-    color: "#333",
-    fontWeight: "bold",
-  },
-});
+const Container = styled.View`
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+`;
+
+const ItemContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
+const LinkButton = styled.TouchableOpacity``;
+
+const LinkText = styled.Text`
+  color: #6c4ee3;
+  font-weight: 600;
+`;
+
+const Text = styled.Text<{ isCurrent?: boolean }>`
+  color: ${({ isCurrent }) => (isCurrent ? "#333" : "#666")};
+  font-weight: ${({ isCurrent }) => (isCurrent ? "bold" : "normal")};
+`;

@@ -1,7 +1,6 @@
-// components/ui/alert-dialog.tsx
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Modal from "react-native-modal";
+import styled from "styled-components/native";
 
 interface AlertDialogProps {
   visible: boolean;
@@ -29,69 +28,73 @@ export const AlertDialog: React.FC<AlertDialogProps> = ({
       animationIn="zoomIn"
       animationOut="zoomOut"
     >
-      <View style={styles.container}>
-        <Text style={styles.title}>{title}</Text>
-        {description ? <Text style={styles.description}>{description}</Text> : null}
-
-        <View style={styles.footer}>
-          <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
-            <Text style={styles.cancelText}>{cancelText}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.confirmButton} onPress={onConfirm}>
-            <Text style={styles.confirmText}>{confirmText}</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <Container>
+        <Title>{title}</Title>
+        {description ? <Description>{description}</Description> : null}
+        <Footer>
+          <CancelButton onPress={onCancel}>
+            <CancelText>{cancelText}</CancelText>
+          </CancelButton>
+          <ConfirmButton onPress={onConfirm}>
+            <ConfirmText>{confirmText}</ConfirmText>
+          </ConfirmButton>
+        </Footer>
+      </Container>
     </Modal>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "white",
-    borderRadius: 12,
-    padding: 20,
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#6C4EE3", // SafeTea purple
-    marginBottom: 8,
-  },
-  description: {
-    fontSize: 14,
-    color: "#555",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-  cancelButton: {
-    flex: 1,
-    marginRight: 5,
-    padding: 12,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  confirmButton: {
-    flex: 1,
-    marginLeft: 5,
-    padding: 12,
-    backgroundColor: "#6C4EE3",
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  cancelText: {
-    color: "#333",
-    fontWeight: "600",
-  },
-  confirmText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-});
+const Container = styled.View`
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  align-items: center;
+`;
+
+const Title = styled.Text`
+  font-size: 18px;
+  font-weight: bold;
+  color: #6c4ee3; /* SafeTea purple */
+  margin-bottom: 8px;
+`;
+
+const Description = styled.Text`
+  font-size: 14px;
+  color: #555;
+  text-align: center;
+  margin-bottom: 20px;
+`;
+
+const Footer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const CancelButton = styled.TouchableOpacity`
+  flex: 1;
+  margin-right: 5px;
+  padding: 12px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  align-items: center;
+`;
+
+const ConfirmButton = styled.TouchableOpacity`
+  flex: 1;
+  margin-left: 5px;
+  padding: 12px;
+  background-color: #6c4ee3;
+  border-radius: 8px;
+  align-items: center;
+`;
+
+const CancelText = styled.Text`
+  color: #333;
+  font-weight: 600;
+`;
+
+const ConfirmText = styled.Text`
+  color: white;
+  font-weight: 600;
+`;

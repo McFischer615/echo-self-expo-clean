@@ -1,16 +1,19 @@
-// components/ui/chart.tsx
 import React from "react";
 import { VictoryChart, VictoryBar, VictoryTheme, VictoryTooltip } from "victory-native";
-import { View, StyleSheet } from "react-native";
+import styled from "styled-components/native";
 
 interface ChartProps {
   data: { x: string | number; y: number }[];
   color?: string;
 }
 
+const Container = styled.View`
+  align-items: center;
+`;
+
 export const ChartComponent: React.FC<ChartProps> = ({ data, color = "#6C4EE3" }) => {
   return (
-    <View style={styles.container}>
+    <Container>
       <VictoryChart theme={VictoryTheme.material} domainPadding={20}>
         <VictoryBar
           data={data}
@@ -19,12 +22,6 @@ export const ChartComponent: React.FC<ChartProps> = ({ data, color = "#6C4EE3" }
           labelComponent={<VictoryTooltip />}
         />
       </VictoryChart>
-    </View>
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-  },
-});

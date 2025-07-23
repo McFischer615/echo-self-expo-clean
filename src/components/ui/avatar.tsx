@@ -1,6 +1,5 @@
-// components/ui/avatar.tsx
 import React from "react";
-import { View, Image, Text, StyleSheet } from "react-native";
+import styled from "styled-components/native";
 
 interface AvatarProps {
   uri?: string;
@@ -8,41 +7,48 @@ interface AvatarProps {
   fallbackText?: string;
 }
 
+const Container = styled.View<{ size: number }>`
+  width: ${({ size }) => size}px;
+  height: ${({ size }) => size}px;
+  border-radius: ${({ size }) => size / 2}px;
+  overflow: hidden;
+  background-color: #ddd;
+`;
+
+const Fallback = styled.View<{ size: number }>`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  border-radius: ${({ size }) => size / 2}px;
+  background-color: #6c4ee3;
+`;
+
+const FallbackText = styled.Text`
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+`;
+
+const ImageStyled = styled.Image<{ size: number }>`
+  width: ${({ size }) => size}px;
+  height: ${({ size }) => size}px;
+  border-radius: ${({ size }) => size / 2}px;
+`;
+
 export const Avatar: React.FC<AvatarProps> = ({
   uri,
   size = 40,
   fallbackText = "U",
 }) => {
   return (
-    <View style={[styles.container, { width: size, height: size, borderRadius: size / 2 }]}>
+    <Container size={size}>
       {uri ? (
-        <Image
-          source={{ uri }}
-          style={{ width: size, height: size, borderRadius: size / 2 }}
-        />
+        <ImageStyled source={{ uri }} size={size} />
       ) : (
-        <View style={[styles.fallback, { borderRadius: size / 2 }]}>
-          <Text style={styles.fallbackText}>{fallbackText}</Text>
-        </View>
+        <Fallback size={size}>
+          <FallbackText>{fallbackText}</FallbackText>
+        </Fallback>
       )}
-    </View>
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    overflow: "hidden",
-    backgroundColor: "#ddd",
-  },
-  fallback: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#6C4EE3",
-  },
-  fallbackText: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 14,
-  },
-});

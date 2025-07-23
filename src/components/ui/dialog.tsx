@@ -1,6 +1,7 @@
 // components/ui/dialog.tsx
 import React from "react";
-import { Dialog, Portal, Button, Paragraph } from "react-native-paper";
+import styled from "styled-components/native";
+import { Dialog as PaperDialog, Portal, Button as PaperButton, Paragraph as PaperParagraph } from "react-native-paper";
 
 interface DialogProps {
   visible: boolean;
@@ -9,18 +10,43 @@ interface DialogProps {
   onDismiss: () => void;
 }
 
+// Optionally style the Paper components (example below, can be omitted if default styling is fine)
+const StyledDialog = styled(PaperDialog)`
+  /* Add custom styles if needed */
+`;
+
+const StyledTitle = styled(PaperDialog.Title)`
+  /* Custom title styles */
+`;
+
+const StyledContent = styled(PaperDialog.Content)`
+  /* Custom content styles */
+`;
+
+const StyledParagraph = styled(PaperParagraph)`
+  /* Custom paragraph styles */
+`;
+
+const StyledActions = styled(PaperDialog.Actions)`
+  /* Custom actions styles */
+`;
+
+const StyledButton = styled(PaperButton)`
+  /* Custom button styles */
+`;
+
 export const AppDialog: React.FC<DialogProps> = ({ visible, title, description, onDismiss }) => (
   <Portal>
-    <Dialog visible={visible} onDismiss={onDismiss}>
-      {title && <Dialog.Title>{title}</Dialog.Title>}
+    <StyledDialog visible={visible} onDismiss={onDismiss}>
+      {title && <StyledTitle>{title}</StyledTitle>}
       {description && (
-        <Dialog.Content>
-          <Paragraph>{description}</Paragraph>
-        </Dialog.Content>
+        <StyledContent>
+          <StyledParagraph>{description}</StyledParagraph>
+        </StyledContent>
       )}
-      <Dialog.Actions>
-        <Button onPress={onDismiss}>OK</Button>
-      </Dialog.Actions>
-    </Dialog>
+      <StyledActions>
+        <StyledButton onPress={onDismiss}>OK</StyledButton>
+      </StyledActions>
+    </StyledDialog>
   </Portal>
 );
