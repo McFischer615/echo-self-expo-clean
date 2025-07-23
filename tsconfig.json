@@ -22,10 +22,9 @@
     ]
   },
   "include": [
-    "App.tsx",
-    "src",
-    "screens",
-    "components"
+  "App.tsx",
+  "src"
+]
   ],
   "exclude": [
     "node_modules",
