@@ -27,8 +27,8 @@ export const echoselfTheme: DefaultTheme = {
     lg: 16,
   },
   typography: {
-    heading: { fontSize: 20, fontWeight: "700" as "700" },
-    subheading: { fontSize: 16, fontWeight: "600" as "600" },
-    body: { fontSize: 14, fontWeight: "400" as "400" },
+    heading: { fontSize: 20, fontWeight: "700" as const },
+    subheading: { fontSize: 16, fontWeight: "600" as const },
+    body: { fontSize: 14, fontWeight: "400" as const },
   },
 };
